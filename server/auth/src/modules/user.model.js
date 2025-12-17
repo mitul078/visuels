@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
     authProvider: { type: String, enum: ["EMAIL", "GOOGLE"], required: true },
     lastLogin: Date,
     otp: { type: String },
-    otpExpiresAt: Date,
+    otpExpiresAt: {type:Date , index: {expires: 0}},
 
 
 }, { timestamps: true })

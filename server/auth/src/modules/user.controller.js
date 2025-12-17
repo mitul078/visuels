@@ -4,8 +4,7 @@ const User = require("./user.model")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const AppError = require("../utils/AppError")
-const passport = require("passport")
-const { Strategy: GoogleStrategy } = require("passport-google-oauth20")
+
 
 
 exports.email_signup = async (req, res, next) => {
@@ -86,10 +85,18 @@ exports.verify_email_otp = async (req, res, next) => {
             role: user.role
         }, process.env.JWT_SECRET, { expiresIn: "7d" })
 
+
         res.cookie("token", token, {
             secure: true,
             httpOnly: true,
             maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+
+        await publishToQueue("AUTH_SERVICE:USER_CREATED", {
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            name: user.name
         })
 
         res.status(200).json({
@@ -101,6 +108,54 @@ exports.verify_email_otp = async (req, res, next) => {
                 role: user.role
             }
         })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.email_signin = async (req, res, next) => {
+    try {
+
+        const { email, password } = req.body
+
+        const user = await User.findOne({ email })
+
+        if (!user)
+            return next(new AppError("User not found", 404))
+
+        const checkPass = await bcrypt.compare(password, user.password)
+
+        if (!checkPass)
+            return next(new AppError("password invalid", 400))
+
+
+        if (user.isEmailVerified === false)
+            return next(new AppError("User is not verified", 400))
+
+        const token = jwt.sign({
+            id: user._id,
+            role: user.role
+        }, process.env.JWT_SECRET, { expiresIn: "7d" })
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+
+
+
+        res.status(200).json({
+            msg: "login success",
+            user: {
+                username: user.username,
+                email: user.email,
+                role: user.role
+            }
+        })
+
+
 
     } catch (error) {
         next(error)
@@ -133,8 +188,8 @@ exports.gmail_signin = async (req, res, next) => {
         res.status(200).json({
             msg: "login successful",
             user: {
-                username: user.username, 
-                email : user.email,
+                username: user.username,
+                email: user.email,
                 name: user.name,
                 role: user.role
             }

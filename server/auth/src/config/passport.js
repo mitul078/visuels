@@ -1,6 +1,7 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../modules/user.model");
+const {publishToQueue} = require("../broker/broker")
 
 passport.use(
     new GoogleStrategy(
@@ -22,6 +23,13 @@ passport.use(
                         authProvider: "GOOGLE"
                     });
                 }
+
+                await publishToQueue("AUTH_SERVICE:USER_CREATED", {
+                    username: user.username,
+                    email: user.email,
+                    role: user.role,
+                    name: user.name
+                })
 
                 return done(null, user);
             } catch (err) {
