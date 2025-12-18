@@ -16,7 +16,7 @@ const productSchema = new mongoose.Schema({
     price: { type: Number, required: true, min: 0 },
     status: { type: String, enum: ["SOLD", "AVAILABLE"], default: "AVAILABLE" },
     rating: { type: Number, min: 0, max: 5, default: 0 },
-    images: [{type: [images] , required: true}],
+    images: [images],
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true, index: true },
     isActive: { type: Boolean, default: true },
     views: { type: Number, default: 0 },

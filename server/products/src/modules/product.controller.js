@@ -75,3 +75,112 @@ exports.add_product = async (req, res, next) => {
     }
 }
 
+
+//globally display the products
+exports.see_products = async (req, res, next) => {
+    try {
+
+        const products = await Product.find().populate("category" , "name")
+
+        res.status(200).json({
+            msg: "fetched products",
+            products
+        })
+
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+//artists products
+exports.products_by_id = async (req, res, next) => {
+    try {
+
+        const { id } = req.params
+
+        const products = await Product.find({ userId: id }).populate("category" , "name")
+
+        if (products.length === 0)
+            return next(new AppError("No products found", 404))
+
+        res.status(200).json({
+            msg: "fetched products",
+            products
+        })
+
+    } catch (error) {
+        next(error)
+
+    }
+}
+
+exports.update_product = async (req, res, next) => {
+    try {
+
+        const { id } = req.params
+        const userId = req.user.id
+
+        const product = await Product.findOne({ _id: id, userId })
+
+        if (!product) {
+            return next(new AppError("Product not found or unauthorized", 404))
+        }
+
+        const { price, title, description } = req.body
+
+        if (title) product.title = title
+        if (description) product.description = description
+        if (price !== undefined) product.price = price
+
+        await product.save()
+
+        res.status(200).json({
+            success: true,
+            message: "Product updated successfully",
+            product
+        })
+
+
+    } catch (error) {
+        next(error)
+
+    }
+}
+
+exports.delete_product = async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const userId = req.user.id
+
+        const product = await Product.findOne({ _id: id, userId })
+
+        if (!product) {
+            return next(new AppError("Product not found or unauthorized", 404))
+        }
+
+
+        if (product.images) {
+            await Promise.all(
+                product.images.map(img =>
+                    imagekit.deleteFile(img.fileId)
+                )
+            )
+        }
+
+
+        await Product.deleteOne({_id: id})
+
+        
+
+        res.status(200).json({
+            success: true,
+            message: "Product deleted successfully"
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+
