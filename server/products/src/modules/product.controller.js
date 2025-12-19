@@ -93,13 +93,12 @@ exports.see_products = async (req, res, next) => {
     }
 }
 
-//artists products
 exports.products_by_id = async (req, res, next) => {
     try {
 
         const { id } = req.params
 
-        const products = await Product.find({ userId: id }).populate("category" , "name")
+        const products = await Product.find({ _id: id })
 
         if (products.length === 0)
             return next(new AppError("No products found", 404))

@@ -6,11 +6,11 @@ async function connect() {
     if (connection) return connection
     try {
         connection = await amqplib.connect(process.env.RABBIT_URL)
-        console.log("Rabbit connected(USER)")
+        console.log("Rabbit connected(CART)")
         channel = await connection.createChannel()
 
     } catch (error) {
-        console.log("Rabbit error(USER): ", error)
+        console.log("Rabbit error(CART): ", error)
     }
 }
 

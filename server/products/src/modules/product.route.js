@@ -11,7 +11,8 @@ const upload = multer({storage})
 
 router.post("/" ,authMiddleware , checkRole("ARTIST") , upload.array("images" , 5) ,add_product )
 router.get("/" , authMiddleware , see_products)
-router.get("/:id" , authMiddleware , checkRole("ARTIST") , products_by_id) //userId
+router.get("/:id" , authMiddleware  , products_by_id)
+router.get("/internal/:id" , products_by_id)
 router.patch("/:id" , authMiddleware , checkRole("ARTIST") , update_product) //productId
 router.delete("/:id" , authMiddleware , checkRole("ARTIST") , delete_product) //productId
 
