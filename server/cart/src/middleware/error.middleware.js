@@ -5,6 +5,7 @@ const errorHandler = async (err, req, res, next) => {
         status: false,
         message: err.message || "internal server error"
     })
+
 }
 
 module.exports = errorHandler

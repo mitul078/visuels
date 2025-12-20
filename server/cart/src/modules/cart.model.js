@@ -20,7 +20,7 @@ const cartSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 
-cartSchema.pre("save", function (next) {
+cartSchema.pre("save", function () {
     let totalItems = 0;
     let totalPrice = 0;
 
@@ -33,7 +33,6 @@ cartSchema.pre("save", function (next) {
     this.totalItems = totalItems;
     this.totalPrice = totalPrice;
 
-    next();
 });
 
 

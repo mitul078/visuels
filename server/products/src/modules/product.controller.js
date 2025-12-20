@@ -1,7 +1,7 @@
 const Product = require("./product.model")
 const Category = require("./category.model")
 const AppError = require("../middlewares/AppError")
-const imagekit = require("../utils/imagekit")
+const imagekit = require("../config/imagekit")
 const slugify = require("slugify")
 
 
@@ -93,24 +93,23 @@ exports.see_products = async (req, res, next) => {
     }
 }
 
-exports.products_by_id = async (req, res, next) => {
+exports.product_by_id = async (req, res, next) => {
     try {
 
         const { id } = req.params
 
-        const products = await Product.find({ _id: id })
+        const product = await Product.findOne({ _id: id })
 
-        if (products.length === 0)
-            return next(new AppError("No products found", 404))
+        if (!product)
+            return next(new AppError("No product found", 404))
 
         res.status(200).json({
-            msg: "fetched products",
-            products
+            msg: "fetched product",
+            product
         })
 
     } catch (error) {
         next(error)
-
     }
 }
 
@@ -181,5 +180,7 @@ exports.delete_product = async (req, res, next) => {
         next(error)
     }
 }
+
+
 
 
