@@ -36,6 +36,7 @@ exports.add_cart = async (req, res, next) => {
                         price: product.price,
                         quantity,
                         subtotal,
+                        artistId: product.artistId
                     }
                 ]
             })
@@ -52,6 +53,7 @@ exports.add_cart = async (req, res, next) => {
             else {
                 cart.items.push({
                     productId,
+                    artistId: product.artistId,
                     title: product.title,
                     image: product.image,
                     price: product.price,

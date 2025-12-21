@@ -18,7 +18,8 @@ exports.get_product_by_id = async (req, res, next) => {
                 title: product.title,
                 price: product.price,
                 image: product.images[0].url,
-                status: product.status
+                status: product.status,
+                artistId: product.userId
             }
         })
 
