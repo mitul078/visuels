@@ -3,6 +3,7 @@ const Category = require("./category.model")
 const AppError = require("../middlewares/AppError")
 const imagekit = require("../config/imagekit")
 const slugify = require("slugify")
+const { publishToQueue } = require("../broker/broker")
 
 
 //admin and artist
@@ -80,7 +81,7 @@ exports.add_product = async (req, res, next) => {
 exports.see_products = async (req, res, next) => {
     try {
 
-        const products = await Product.find().populate("category" , "name")
+        const products = await Product.find().populate("category", "name")
 
         res.status(200).json({
             msg: "fetched products",
@@ -93,6 +94,7 @@ exports.see_products = async (req, res, next) => {
     }
 }
 
+//productId
 exports.product_by_id = async (req, res, next) => {
     try {
 
@@ -113,6 +115,7 @@ exports.product_by_id = async (req, res, next) => {
     }
 }
 
+//productId
 exports.update_product = async (req, res, next) => {
     try {
 
@@ -129,7 +132,14 @@ exports.update_product = async (req, res, next) => {
 
         if (title) product.title = title
         if (description) product.description = description
-        if (price !== undefined) product.price = price
+
+        if (price !== undefined || product.price !== price) {
+            product.price = price
+            await publishToQueue("PRODUCT_SERVICE:PRICE_CHANGED", {
+                productId: product._id,
+                price
+            })
+        }
 
         await product.save()
 
@@ -146,6 +156,7 @@ exports.update_product = async (req, res, next) => {
     }
 }
 
+//productId
 exports.delete_product = async (req, res, next) => {
     try {
         const { id } = req.params
@@ -167,9 +178,9 @@ exports.delete_product = async (req, res, next) => {
         }
 
 
-        await Product.deleteOne({_id: id})
+        await Product.deleteOne({ _id: id })
 
-        
+
 
         res.status(200).json({
             success: true,
@@ -181,6 +192,26 @@ exports.delete_product = async (req, res, next) => {
     }
 }
 
+//userId
+exports.get_logged_user_products = async (req ,res, next) => {
+    try {
+
+        const userId = req.user.id
+
+        const products = await Product.find({userId})
+
+        if(products.length === 0)
+            return next(new AppError("No products found" , 404))
+
+        res.status(200).json({
+            msg: "fetched products",
+            products
+        })
+        
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 
