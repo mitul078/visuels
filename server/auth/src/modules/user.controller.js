@@ -202,4 +202,28 @@ exports.gmail_signin = async (req, res, next) => {
 }
 
 
+exports.me = async (req, res, next) => {
+    try {
+
+        const userId = req.authType === "USER" ? req.user.id : req.userId
+
+        const user = await User.findOne({_id: userId})
+
+        if(!user)
+            return next(new AppError("User not found" , 404))
+
+        res.status(200).json({
+            user: {
+                email: user.email,
+                username: user.username,
+            }
+        })
+
+
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 

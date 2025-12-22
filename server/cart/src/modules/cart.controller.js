@@ -83,9 +83,23 @@ exports.see_cart = async (req, res, next) => {
     try {
 
         const userId = req.authType === "USER" ? req.user.id : req.userId
+        const isInternal = req.path.includes("/internal")
 
-        const products = await Cart.find({ userId }).select("items totalItems totalPrice")
+        if (isInternal) {
 
+            const products = await Cart.find({ userId }).select("items")
+
+            if (products.length === 0)
+                return next(new AppError("cart empty", 404))
+
+
+            res.status(200).json({
+                msg: "fetch items",
+                products
+            })
+        }
+
+        const products = await Cart.find({ userId }).select("items totalPrice totalItems")
         if (products.length === 0)
             return next(new AppError("cart empty", 404))
 
@@ -94,6 +108,8 @@ exports.see_cart = async (req, res, next) => {
             msg: "fetch items",
             products
         })
+
+
     } catch (error) {
         next(error)
 
