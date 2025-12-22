@@ -6,7 +6,7 @@ exports.authMiddleware = async (req, res, next) => {
 
         const token = req.cookies.token
         if (!token)
-            return next(new AppError("unauthorize", 403))
+            return next(new AppError("unauthorize", 400))
 
         const decode = jwt.verify(token, process.env.JWT_SECRET)
 

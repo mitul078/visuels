@@ -9,14 +9,10 @@ app.use(cookieParser())
 
 
 app.use("/api/v1/products" , require("./modules/product.route"))
-app.use("/internal/products" , require("./modules/internal.route"))
+
 
 
 app.use(errorHandler)
-
-
-
-
 
 
 module.exports = app

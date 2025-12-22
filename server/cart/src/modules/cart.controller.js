@@ -1,5 +1,5 @@
 const Cart = require("./cart.model")
-const AppError = require("../middleware/AppError")
+const AppError = require("../utils/AppError")
 const { getProductById } = require("../service/product.service")
 
 
@@ -7,12 +7,12 @@ exports.add_cart = async (req, res, next) => {
     try {
 
         const { productId, quantity } = req.body
-        const userId = req.user.id
+        const userId = req.authType === "USER" ? req.user.id : req.userId
 
         if (!productId || !quantity || quantity <= 0)
             return next(new AppError("invalid product or quantity", 400))
 
-        const product = await getProductById(productId)
+        const product = await getProductById(productId, userId)
 
         if (!product) {
             return next(new AppError("Product not found", 404))
@@ -82,12 +82,13 @@ exports.add_cart = async (req, res, next) => {
 exports.see_cart = async (req, res, next) => {
     try {
 
-        const userId = req.user.id
+        const userId = req.authType === "USER" ? req.user.id : req.userId
 
         const products = await Cart.find({ userId }).select("items totalItems totalPrice")
 
         if (products.length === 0)
-            return next(new AppError("cart empty"))
+            return next(new AppError("cart empty", 404))
+
 
         res.status(200).json({
             msg: "fetch items",

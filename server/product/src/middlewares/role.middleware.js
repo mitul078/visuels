@@ -2,11 +2,13 @@ const AppError = require("./AppError")
 
 exports.checkRole = (...roles) => {
     return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
-            return next(new AppError("Access denied", 400))
-        }
+        
+        if (!req.user)
+            return next(new AppError("Authentication required", 401))
 
-        // User has required role, continue to next middleware/controller
+        if (!roles.includes(req.user.role))
+            return next(new AppError("Access denied", 403))
+
         next()
     }
 }

@@ -12,7 +12,7 @@ exports.add_product = async (req, res, next) => {
 
         const { title, description, price, category } = req.body
 
-        const userId = req.user.id
+        const userId = req.authType === "USER" ? req.user.id : req.userId
 
         if (!req.files || req.files.length === 0) {
             return next(new AppError("At least one image is required", 400));
@@ -61,7 +61,7 @@ exports.add_product = async (req, res, next) => {
             title,
             description,
             price,
-            userId,
+            artistId: userId,
             images,
             category: categoryDoc._id
         })
@@ -99,11 +99,25 @@ exports.product_by_id = async (req, res, next) => {
     try {
 
         const { id } = req.params
+        const isInternal = req.path.includes("/internal")
 
         const product = await Product.findOne({ _id: id })
 
         if (!product)
             return next(new AppError("No product found", 404))
+
+        if (isInternal) {
+            return res.status(200).json({
+                product: {
+                    productId: product._id,
+                    title: product.title,
+                    price: product.price,
+                    image: product.images[0].url,
+                    status: product.status,
+                    artistId: product.artistId
+                }
+            })
+        }
 
         res.status(200).json({
             msg: "fetched product",
@@ -120,9 +134,9 @@ exports.update_product = async (req, res, next) => {
     try {
 
         const { id } = req.params
-        const userId = req.user.id
+        const userId = req.authType === "USER" ? req.user.id : req.userId
 
-        const product = await Product.findOne({ _id: id, userId })
+        const product = await Product.findOne({ _id: id, artistId: userId })
 
         if (!product) {
             return next(new AppError("Product not found or unauthorized", 404))
@@ -160,9 +174,9 @@ exports.update_product = async (req, res, next) => {
 exports.delete_product = async (req, res, next) => {
     try {
         const { id } = req.params
-        const userId = req.user.id
+        const userId = req.authType === "USER" ? req.user.id : req.userId
 
-        const product = await Product.findOne({ _id: id, userId })
+        const product = await Product.findOne({ _id: id, artistId: userId })
 
         if (!product) {
             return next(new AppError("Product not found or unauthorized", 404))
@@ -193,25 +207,24 @@ exports.delete_product = async (req, res, next) => {
 }
 
 //userId
-exports.get_logged_user_products = async (req ,res, next) => {
+exports.get_logged_artist_products = async (req, res, next) => {
     try {
 
-        const userId = req.user.id
+        const userId = req.authType === "USER" ? req.user.id : req.userId
 
-        const products = await Product.find({userId})
+        const products = await Product.find({ artistId: userId })
 
-        if(products.length === 0)
-            return next(new AppError("No products found" , 404))
+        if (products.length === 0)
+            return next(new AppError("No products found", 404))
 
         res.status(200).json({
             msg: "fetched products",
             products
         })
-        
+
     } catch (error) {
         next(error)
     }
 }
-
 
 

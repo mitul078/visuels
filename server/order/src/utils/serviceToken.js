@@ -4,7 +4,7 @@ let SERVICE_TOKEN = null
 
 const generateServiceToken = () => {
     return jwt.sign(
-        { service: "CART_SERVICE" },process.env.SERVICE_JWT_SECRET,{ expiresIn: "1h" }
+        { service: "ORDER_SERVICE" }, process.env.SERVICE_JWT_SECRET, { expiresIn: "1h" }
     )
 }
 

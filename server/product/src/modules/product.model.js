@@ -10,7 +10,7 @@ const images = new mongoose.Schema({
 
 
 const productSchema = new mongoose.Schema({
-    userId: { type: String, required: true },
+    artistId: { type: String, required: true },
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
     price: { type: Number, required: true, min: 0 },

@@ -1,19 +1,20 @@
 const axios = require("axios")
 const { getServiceToken } = require("../utils/serviceToken")
 
-exports.getProductById = async (productId) => {
+exports.getProductById = async (productId , userId) => {
     const token = getServiceToken()
 
     const response = await axios.get(
-        `http://localhost:4002/internal/products/${productId}`,
+        `${process.env.PRODUCT_SERVICE_URL}/internal/${productId}`,
         {
             headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${token}`,
+                "x-user-id": userId
             }
         }
     )
 
-    
+    console.log(response.data.product)
 
     return response.data.product
 }
