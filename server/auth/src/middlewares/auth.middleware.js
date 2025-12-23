@@ -13,6 +13,8 @@ exports.authMiddleware = async (req, res, next) => {
 
         req.user = decode
         req.authType = "USER"
+
+        next()
         
     } catch (error) {
         next(error)

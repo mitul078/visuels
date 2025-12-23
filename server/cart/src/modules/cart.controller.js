@@ -87,24 +87,20 @@ exports.see_cart = async (req, res, next) => {
 
         if (isInternal) {
 
-            const products = await Cart.find({ userId }).select("items")
+            const cart = await Cart.findOne({ userId })
+            console.log(cart.items)
 
-            if (products.length === 0)
-                return next(new AppError("cart empty", 404))
-
-
-            res.status(200).json({
+            return res.status(200).json({
                 msg: "fetch items",
-                products
+                cart: cart.items
             })
         }
 
-        const products = await Cart.find({ userId }).select("items totalPrice totalItems")
-        if (products.length === 0)
+        const products = await Cart.findOne({ userId }).select("items totalPrice totalItems")
+        if (!products)
             return next(new AppError("cart empty", 404))
 
-
-        res.status(200).json({
+        return res.status(200).json({
             msg: "fetch items",
             products
         })

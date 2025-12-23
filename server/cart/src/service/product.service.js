@@ -14,7 +14,5 @@ exports.getProductById = async (productId , userId) => {
         }
     )
 
-    console.log(response.data.product)
-
     return response.data.product
 }

@@ -206,6 +206,7 @@ exports.me = async (req, res, next) => {
     try {
 
         const userId = req.authType === "USER" ? req.user.id : req.userId
+        console.log(userId)
 
         const user = await User.findOne({_id: userId})
 
@@ -218,8 +219,6 @@ exports.me = async (req, res, next) => {
                 username: user.username,
             }
         })
-
-
 
     } catch (error) {
         next(error)

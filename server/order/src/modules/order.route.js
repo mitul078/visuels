@@ -4,6 +4,6 @@ const { checkRole } = require("../middlewares/role.middleware")
 const { createOrder } = require("./order.controller")
 const router = express.Router()
 
-router.get("/" , authMiddleware , checkRole("USER") , createOrder)
+router.post("/create" , authMiddleware , checkRole("USER") , createOrder)
 
 module.exports = router

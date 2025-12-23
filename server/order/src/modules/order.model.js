@@ -9,15 +9,15 @@ const itemSchema = new mongoose.Schema({
     image: { type: String, required: true },
     subtotal: { type: Number, min: 0 },
     commissionRate: { type: Number, default: 0.05 },
-    commissionAmount: { type: Number, min: 0, required: true },
-    artistEarning: { type: Number, required: true, min: 0 }
+    commissionAmount: { type: Number, min: 0 },
+    artistEarning: { type: Number, min: 0 }
 }, { _id: false })
 
 const orderSchema = new mongoose.Schema({
     userId: { type: String, required: true, index: true },
     items: { type: [itemSchema], required: true },
-    totalAmount: { type: Number, required: true, min: 0 },
-    totalCommission: { type: Number, required: true, min: 0 },
+    totalAmount: { type: Number, min: 0 },
+    totalCommission: { type: Number, min: 0 },
     status: { type: String, enum: ["PENDING", "PAID", "DELIVERED", "SHIPPED", "CANCEL", "REFUND"], default: "PENDING", index: true },
     payment: {
         paymentId: String,
@@ -38,7 +38,8 @@ const orderSchema = new mongoose.Schema({
     contact: {
         type: {
             email: { type: String, required: true },
-            phone: { type: String, required: true }
+            phone: { type: String, required: true },
+            username: {type:String , required: true},
         },
         required: true
     },

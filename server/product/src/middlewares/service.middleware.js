@@ -10,7 +10,7 @@ exports.validService = (allowedService = []) => {
             if (!token) {
                 return next(new AppError("service token missing", 401))
             }
-
+            
             const decode = jwt.verify(token, process.env.SERVICE_JWT_SECRET)
 
 
@@ -29,7 +29,6 @@ exports.validService = (allowedService = []) => {
             req.authType = "SERVICE"
             req.userId = userId
 
-            console.log(decode)
 
             next()
 
