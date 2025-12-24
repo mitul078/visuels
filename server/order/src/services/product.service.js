@@ -1,7 +1,7 @@
 const axios = require("axios")
 const { getServiceToken } = require("../utils/serviceToken")
 
-exports.getProductById = async (productId , userId) => {
+exports.getProduct = async (productId, userId) => {
     const token = getServiceToken()
 
     const response = await axios.get(
@@ -13,6 +13,7 @@ exports.getProductById = async (productId , userId) => {
             }
         }
     )
+
 
     return response.data.product
 }
