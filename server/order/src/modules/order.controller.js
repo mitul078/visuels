@@ -18,20 +18,33 @@ exports.create_order_cart = async (req, res, next) => {
         const product = await getProduct(productId, userId) //fetch product items
         const user = await me(userId) //user detail
 
-        const orderItems = {
+
+        const orderItem = {
             productId: product?.productId,
             artistId: product?.artistId,
             title: product?.title,
             price: product?.price,
             quantity: quantity || product?.quantity,
             image: product?.image,
+        }
 
+        const existingOrderWithPid = await Order.findOne({ "item.productId": productId })
+
+        if (existingOrderWithPid) {
+            return res.status(200).json({
+                msg: "Your order has already placed",
+                order: {
+                    item: existingOrderWithPid.item,
+                    status: existingOrderWithPid.status,
+                    amount: existingOrderWithPid.totalAmount
+                }
+            })
         }
 
 
         const order = await Order.create({
             userId,
-            items: orderItems,
+            item: orderItem,
             contact: {
                 email: user?.email,
                 username: user?.username,
@@ -55,7 +68,7 @@ exports.get_artist_order = async (req, res, next) => {
 
         const artistId = req.user.id
 
-        const order = await Order.find({ "items.artistId": artistId, status: { $in: ["REQUESTED", "VIEWED"] } }).select("items requirement status createdAt")
+        const order = await Order.find({ "item.artistId": artistId, status: { $in: ["REQUESTED", "VIEWED"] } }).select("item requirement status createdAt")
 
         if (order.length === 0) {
             return res.status(200).json({
@@ -77,7 +90,6 @@ exports.get_artist_order = async (req, res, next) => {
     }
 }
 
-
 //for user
 exports.get_order_by_id = async (req, res, next) => {
     try {
@@ -85,7 +97,7 @@ exports.get_order_by_id = async (req, res, next) => {
         const userId = req.user.id
         const orderId = req.params.id
 
-        const order = await Order.findOne({ _id: orderId, userId }).select("items status createdAt")
+        const order = await Order.findOne({ _id: orderId, userId }).select("item status createdAt")
 
         if (!order) {
             return res.status(200).json({
@@ -110,7 +122,7 @@ exports.get_my_orders = async (req, res, next) => {
 
         const userId = req.user.id
 
-        const order = await Order.find({ userId }).select("items status createdAt")
+        const order = await Order.find({ userId }).select("item status createdAt")
 
         if (order.length === 0) {
             return res.status(200).json({
@@ -119,7 +131,7 @@ exports.get_my_orders = async (req, res, next) => {
             })
         }
 
-        return res.status(200).json({
+        res.status(200).json({
             msg: "Orders fetched",
             order,
             totalOrder: order.length
@@ -141,10 +153,10 @@ exports.update_order = async (req, res, next) => {
 
         const ALLOWED_STATUS = ["VIEWED", "ACCEPTED", "REJECTED"]
 
-        if(!ALLOWED_STATUS.includes(status))
-            return next(new AppError("invalid status" , 400))
+        if (!ALLOWED_STATUS.includes(status))
+            return next(new AppError("invalid status", 400))
 
-        const order = await Order.findOne({ _id: orderId, "items.artistId": artistId })
+        const order = await Order.findOne({ _id: orderId, "item.artistId": artistId })
 
         if (!order) {
             return res.status(404).json({
@@ -168,5 +180,25 @@ exports.update_order = async (req, res, next) => {
     }
 }
 
+
+exports.cancel_order = async (req, res, next) => {
+    try {
+
+        const {id: orderId} = req.params
+        const userId = req.user.id
+
+        const order = await Order.findOneAndDelete({_id: orderId , userId})
+        if(!order)
+            return next(new AppError("Order not found" , 404))
+
+        return res.status(200).json({
+            msg: "Order cancel successfully",
+        })
+
+
+    } catch (error) {
+        next(error)
+    }
+}
 
 

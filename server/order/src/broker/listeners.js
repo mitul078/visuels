@@ -1,58 +1,42 @@
 const { subscribeToQueue } = require("./broker")
-const mongoose = require("mongoose")
 
+const Order = require("../modules/order.model")
 
-// module.exports = () => {
-//     subscribeToQueue("PRODUCT_SERVICE:PRICE_CHANGED", async (data) => {
-//         const { productId, price } = data
-//         const pid = new mongoose.Types.ObjectId(productId)
-//         await Cart.updateMany(
-//             { "items.productId": pid },
-//             [
-//                 {
-//                     $set: {
-//                         items: {
-//                             $map: {
-//                                 input: "$items",
-//                                 as: "item",
-//                                 in: {
-//                                     $cond: [
-//                                         {
-//                                             $eq: ["$$item.productId", pid]
-//                                         },
-//                                         {
-//                                             $mergeObjects: [
-//                                                 "$$item",
-//                                                 {
-//                                                     price: price,
-//                                                     subtotal: {
-//                                                         $multiply: ["$$item.quantity", price]
-//                                                     }
-//                                                 }
-//                                             ]
-//                                         },
-//                                         "$$item"
-//                                     ]
-//                                 }
-//                             }
+module.exports = () => {
+    subscribeToQueue("PRODUCT_SERVICE:PRICE_CHANGED", async (data) => {
+        const { productId, price } = data
+        
+        
 
-//                         }
-//                     }
-//                 },
-//                 {
-//                     $set: {
-//                         totalItems: {
-//                             $sum: "$items.quantity"
-//                         },
-//                         totalPrice: {
-//                             $sum: "$items.subtotal"
-//                         }
-//                     }
-//                 }
-//             ],
-//             {
-//                 updatePipeline: true
-//             }
-//         )
-//     })
-// }
+        await Order.updateOne(
+            { "item.productId": productId },
+            [
+                {
+                    $set: {
+                        item: {
+                            $cond: [
+                                { $eq: ["$item.productId", productId] },
+                                {
+                                    $mergeObjects: [
+                                        "$item",
+                                        { price: price, subtotal: { $multiply: ["$item.quantity", price] } }
+                                    ]
+                                },
+                                "$item"
+                            ]
+
+                        }
+                    }
+                },
+                {
+                    $set: {
+                        totalAmount: "$item.subtotal"
+                    }
+                }
+            ],
+            {
+                updatePipeline: true
+            }
+        )
+    })
+}
