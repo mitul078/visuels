@@ -3,7 +3,7 @@ const Category = require("./category.model")
 const AppError = require("../middlewares/AppError")
 const imagekit = require("../config/imagekit")
 const slugify = require("slugify")
-const { publishToQueue } = require("../broker/broker")
+
 
 
 //admin and artist
@@ -149,10 +149,6 @@ exports.update_product = async (req, res, next) => {
 
         if (price !== undefined || product.price !== price) {
             product.price = price
-            await publishToQueue("PRODUCT_SERVICE:PRICE_CHANGED", {
-                productId: product._id,
-                price
-            })
         }
 
         await product.save()

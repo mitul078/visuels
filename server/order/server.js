@@ -7,9 +7,7 @@ const setListeners = require("./src/broker/listeners")
 
 
 connectDB()
-connect().then(() => {
-    setListeners()
-})
+connect()
 
 app.listen(process.env.PORT, () => {
     console.log("Server start(ORDER)")

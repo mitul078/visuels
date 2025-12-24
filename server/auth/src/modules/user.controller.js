@@ -206,7 +206,9 @@ exports.me = async (req, res, next) => {
     try {
 
         const userId = req.authType === "USER" ? req.user.id : req.userId
-        console.log(userId)
+
+        if(!userId)
+            return next(new AppError("Login please" , 400))
 
         const user = await User.findOne({_id: userId})
 
@@ -225,4 +227,27 @@ exports.me = async (req, res, next) => {
     }
 }
 
+
+exports.user_by_id = async (req , res , next) => {
+    try {
+
+        const {id: artistId} = req.params
+
+        const user = await User.findOne({_id: artistId})
+
+        if(!user)
+            return next(new AppError("User not found" , 404))
+
+        res.status(200).json({
+            user: {
+                email: user.email,
+                username: user.username,
+                name:user.name
+            }
+        })
+        
+    } catch (error) {
+        next(error)
+    }
+}
 

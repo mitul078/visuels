@@ -1,14 +1,15 @@
 const { getProduct } = require("../services/product.service")
 const Order = require("./order.model")
 const AppError = require("../utils/AppError")
-const { me } = require("../services/auth.service")
+const { me, get_artist_detail } = require("../services/auth.service")
+const { publishToQueue } = require("../broker/broker")
 
 
 //validation left
 exports.create_order_cart = async (req, res, next) => {
     try {
 
-        const userId = req.user.id
+        const userId = req.authType === "USER" ? req.user.id : req.userId
 
         const { requirement, quantity, productId } = req.body
 
@@ -42,6 +43,8 @@ exports.create_order_cart = async (req, res, next) => {
         }
 
 
+
+
         const order = await Order.create({
             userId,
             item: orderItem,
@@ -51,6 +54,33 @@ exports.create_order_cart = async (req, res, next) => {
             },
             requirement
         })
+
+        const artist = await get_artist_detail(order.item.artistId, userId)
+
+        await publishToQueue("ORDER_DETAIL:ARTIST", {
+            email: artist.email,
+            username: artist.username,
+            name: artist.name,
+            customerDetail: order.contact,
+            product: order.item,
+            orderId: order._id
+        })
+
+        await publishToQueue("ORDER_DETAIL:USER", {
+            customerDetail: {
+                email: user?.email,
+                name: user?.name
+            },
+            orderId: order._id,
+            product: order.item,
+            artistDetail: {
+                email: artist.email,
+                username: artist.username,
+                name: artist.name
+            }
+
+        })
+
 
         res.status(201).json({
             msg: "Order Created",
@@ -184,12 +214,12 @@ exports.update_order = async (req, res, next) => {
 exports.cancel_order = async (req, res, next) => {
     try {
 
-        const {id: orderId} = req.params
+        const { id: orderId } = req.params
         const userId = req.user.id
 
-        const order = await Order.findOneAndDelete({_id: orderId , userId})
-        if(!order)
-            return next(new AppError("Order not found" , 404))
+        const order = await Order.findOneAndDelete({ _id: orderId, userId })
+        if (!order)
+            return next(new AppError("Order not found", 404))
 
         return res.status(200).json({
             msg: "Order cancel successfully",
