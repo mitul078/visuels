@@ -254,9 +254,10 @@ exports.artist_by_id = async (req, res, next) => {
 
 exports.artists = async (req, res, next) => {
     try {
+        
 
         const artists = await User.find({ role: "ARTIST" }).select("_id")
-        
+
 
         res.status(200).json({
             artists

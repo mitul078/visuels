@@ -16,18 +16,77 @@ const { artists, users } = require("../services/auth.service")
 // check that params id was a user for that fetch all the user with role user
 // communication possible
 exports.send_message = async (req, res, next) => {
-    
     try {
+        const { content, type } = req.body
+
         if (req.user.role === "USER") {
             const userId = req.user.id
-            
-            const artistIds = await artists(userId)
-            console.log(artistIds)
+            const artistId = req.params.id
 
+            const artistIds = await artists(userId)
+            const artistList = artistIds.map(a => a._id.toString())
+
+            if (!artistList.includes(artistId)) {
+                return next(new AppError("Artist not found", 404))
+            }
+
+            let chat = await Chat.findOne({
+                participants: { $all: [userId, artistId] }
+            })
+
+            if (!chat) {
+                chat = await Chat.create({
+                    participants: [userId, artistId]
+                })
+            }
+
+            const message = await Message.create({
+                chatId: chat._id,
+                senderId: userId,
+                senderRole: "USER",
+                content,
+                type
+            })
+
+            chat.messages.push(message._id)
+            await chat.save()
+
+            return res.status(201).json({ msg: "Message sent" })
         }
-        else if (req.user.role === "ARTIST") {
-            const userId = req.authType === "USER" ? req.user.id : req.userId
-            
+
+        if (req.user.role === "ARTIST") {
+            const artistId = req.user.id
+            const userId = req.params.id
+
+            const usersArr = await users(artistId)
+            const usersList = usersArr.map(u => u._id.toString())
+
+            if (!usersList.includes(userId)) {
+                return next(new AppError("User not found", 404))
+            }
+
+            let chat = await Chat.findOne({
+                participants: { $all: [artistId, userId] }
+            })
+
+            if (!chat) {
+                chat = await Chat.create({
+                    participants: [artistId, userId]
+                })
+            }
+
+            const message = await Message.create({
+                chatId: chat._id,
+                senderId: artistId,
+                senderRole: "ARTIST",
+                content,
+                type
+            })
+
+            chat.messages.push(message._id)
+            await chat.save()
+
+            return res.status(201).json({ msg: "Message sent" })
         }
 
     } catch (error) {
@@ -36,21 +95,4 @@ exports.send_message = async (req, res, next) => {
 }
 
 
-// exports.get_message = async (req, res, next) => {
-//     try {
 
-//         const user_1 = req.user.id
-//         const { id: user_2 } = req.params
-
-//         const chat = await Chat.findOne({ participants: { $all: [user_1, user_2] } }).populate("messages")
-
-//         if (!chat)
-//             return next(new AppError("Chat not found", 404))
-
-//         res.status(200).json({ chat })
-
-
-//     } catch (error) {
-//         next(error)
-//     }
-// }

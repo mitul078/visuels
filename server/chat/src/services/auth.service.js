@@ -12,7 +12,6 @@ exports.users = async (userId) => {
         }
     })
 
-    console.log(res)
 
     return res.data.users
 }
@@ -26,7 +25,6 @@ exports.artists = async (userId) => {
         }
     })
 
-    console.log(res)
 
     return res.data.artists
 }

@@ -12,11 +12,12 @@ router.post("/email-signin", email_signin)
 
 
 router.get("/me", authMiddleware, me)
+router.get("/internal/users" , validateService(["MESSAGE_SERVICE"]) , users)
+router.get("/internal/artists" ,validateService(["MESSAGE_SERVICE"]) , artists)
+
 router.get("/internal/me", validateService(["ORDER_SERVICE"]), me)
 router.get("/internal/:id", validateService(["ORDER_SERVICE"]), artist_by_id)
 
-router.get("/internal/users" , validateService(["MESSAGE_SERVICE"]) , users)
-router.get("/internal/artists" ,validateService(["MESSAGE_SERVICE"]) , artists)
 
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }))
 router.get("/google/callback", passport.authenticate("google", {
