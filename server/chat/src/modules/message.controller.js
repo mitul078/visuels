@@ -16,18 +16,21 @@ exports.send_message = async (req, res, next) => {
         const senderId = req.user.id
         const { id: receiverId } = req.params
 
-        
-        const result = await check_exist(receiverId, senderId)
-        
 
-        if (!result.valid) {
+        const result = await check_exist(receiverId, senderId)
+
+
+        if (!result || !result.valid) {
             return next(new AppError("Receiver invalid", 404))
         }
 
+        const participants = [senderId, receiverId].sort()
+
+
         const chat = await Chat.findOneAndUpdate(
-            { participants: { $all: [senderId, receiverId] } },
+            { participants },
             {
-                $setOnInsert: { participants: [senderId, receiverId] },
+                $setOnInsert: { participants },
                 $set: {
                     lastMessage: encrypt(content),
                     lastMessageAt: Date.now()

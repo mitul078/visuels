@@ -4,6 +4,7 @@ const User = require("./user.model")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const AppError = require("../utils/AppError")
+const mongoose = require("mongoose")
 
 
 

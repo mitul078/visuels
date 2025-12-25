@@ -2,15 +2,31 @@ const axios = require("axios")
 
 const { getServiceToken } = require("../utils/serviceToken")
 
-exports.check_exist = async (id , userId) => {
-    const token = getServiceToken()
+exports.check_exist = async (id, userId) => {
+    try {
+        const token = getServiceToken()
 
-    const res = await axios.get(`${process.env.AUTH_SERVICE_URL}/internal/check/${id}`, {
-        headers: {
-            Authorization:`Bearer ${token}`,
-            "x-user-id": userId
+        const { data } = await axios.get(
+            `${process.env.AUTH_SERVICE_URL}/internal/check/${id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "x-user-id": userId
+                }
+            }
+        )
+
+        return data
+
+    } catch (error) {
+        console.error(
+            "Auth service error:",
+            error.response?.data || error.message
+        )
+
+        return {
+            valid: false,
+            msg: "Auth service unreachable or user invalid"
         }
-    })
-
-    return res.data
+    }
 }

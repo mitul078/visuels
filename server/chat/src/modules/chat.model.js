@@ -8,4 +8,7 @@ const chatSchema = new mongoose.Schema({
 
 }, { timestamps: true })
 
+chatSchema.index({ participants: 1 }, { unique: true })
+
+
 module.exports = mongoose.model("Chat", chatSchema)
