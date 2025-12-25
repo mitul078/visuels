@@ -207,13 +207,13 @@ exports.me = async (req, res, next) => {
 
         const userId = req.authType === "USER" ? req.user.id : req.userId
 
-        if(!userId)
-            return next(new AppError("Login please" , 400))
+        if (!userId)
+            return next(new AppError("Login please", 400))
 
-        const user = await User.findOne({_id: userId})
+        const user = await User.findOne({ _id: userId })
 
-        if(!user)
-            return next(new AppError("User not found" , 404))
+        if (!user)
+            return next(new AppError("User not found", 404))
 
         res.status(200).json({
             user: {
@@ -227,27 +227,57 @@ exports.me = async (req, res, next) => {
     }
 }
 
-
-exports.user_by_id = async (req , res , next) => {
+//to send info about the artist when order create
+exports.artist_by_id = async (req, res, next) => {
     try {
 
-        const {id: artistId} = req.params
+        const { id: artistId } = req.params
 
-        const user = await User.findOne({_id: artistId})
+        const user = await User.findOne({ _id: artistId })
 
-        if(!user)
-            return next(new AppError("User not found" , 404))
+        if (!user)
+            return next(new AppError("User not found", 404))
 
         res.status(200).json({
             user: {
                 email: user.email,
                 username: user.username,
-                name:user.name
+                name: user.name
             }
         })
-        
+
     } catch (error) {
         next(error)
     }
 }
 
+
+exports.artists = async (req, res, next) => {
+    try {
+
+        const artists = await User.find({ role: "ARTIST" }).select("_id")
+        
+
+        res.status(200).json({
+            artists
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.users = async (req, res, next) => {
+    try {
+
+        const users = await User.find({role: "USER"}).select("_id")
+
+        res.status(200).json({
+            users
+        })
+
+    } catch (error) {
+        next(error)
+
+    }
+}
