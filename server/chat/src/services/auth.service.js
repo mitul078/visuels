@@ -2,29 +2,15 @@ const axios = require("axios")
 
 const { getServiceToken } = require("../utils/serviceToken")
 
-exports.users = async (userId) => {
+exports.check_exist = async (id , userId) => {
     const token = getServiceToken()
 
-    const res = await axios.get(`${process.env.AUTH_SERVICE_URL}/internal/users`, {
+    const res = await axios.get(`${process.env.AUTH_SERVICE_URL}/internal/check/${id}`, {
         headers: {
             Authorization:`Bearer ${token}`,
             "x-user-id": userId
         }
     })
 
-
-    return res.data.users
-}
-exports.artists = async (userId) => {
-    const token = getServiceToken()
-
-    const res = await axios.get(`${process.env.AUTH_SERVICE_URL}/internal/artists`, {
-        headers: {
-            Authorization:`Bearer ${token}`,
-            "x-user-id": userId
-        }
-    })
-
-
-    return res.data.artists
+    return res.data
 }

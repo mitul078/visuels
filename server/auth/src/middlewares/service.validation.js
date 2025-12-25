@@ -14,8 +14,11 @@ exports.validateService = (allowedService = []) => {
             if (!decode.service)
                 return next(new AppError("invalid service", 401))
 
+           
+
 
             const userId = req.headers["x-user-id"]
+
             
             if (allowedService.length && !allowedService.includes(decode.service)) {
                 return next(new AppError("unauthorized", 403))

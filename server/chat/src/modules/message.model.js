@@ -10,11 +10,6 @@ const messageSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    senderRole: {
-        type: String,
-        enum: ["USER", "ARTIST"],
-        required: true
-    },
     content: {
         type: String,
         required: true

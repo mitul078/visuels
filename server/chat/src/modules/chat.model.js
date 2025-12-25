@@ -3,7 +3,8 @@ const mongoose = require("mongoose")
 const chatSchema = new mongoose.Schema({
 
     participants: [{ type: String }],
-    messages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }]
+    lastMessage: { type: String },
+    lastMessageAt: Date
 
 }, { timestamps: true })
 

@@ -36,6 +36,8 @@ exports.email_signup = async (req, res, next) => {
             password: hashPass
         })
 
+
+
         await publishToQueue("AUTH_SERVICE:EMAIL_OTP", {
             email: user.email,
             otp
@@ -233,7 +235,7 @@ exports.artist_by_id = async (req, res, next) => {
 
         const { id: artistId } = req.params
 
-        const user = await User.findOne({ _id: artistId })
+        const user = await User.findOne({ _id: artistId, role: "ARTIST" })
 
         if (!user)
             return next(new AppError("User not found", 404))
@@ -252,33 +254,33 @@ exports.artist_by_id = async (req, res, next) => {
 }
 
 
-exports.artists = async (req, res, next) => {
+exports.check_user_exists = async (req, res, next) => {
     try {
+        const { id } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                valid: false,
+                msg: "Invalid ID format"
+            });
+        }
+
+        const exists = await User.exists({ _id: id });
         
 
-        const artists = await User.find({ role: "ARTIST" }).select("_id")
+        if (!exists) {
+            return res.status(404).json({
+                valid: false,
+                msg: "User not found"
+            });
+        }
 
-
-        res.status(200).json({
-            artists
-        })
-
-    } catch (error) {
-        next(error)
-    }
-}
-
-exports.users = async (req, res, next) => {
-    try {
-
-        const users = await User.find({role: "USER"}).select("_id")
-
-        res.status(200).json({
-            users
-        })
+        return res.status(200).json({
+            valid: true,
+            msg: "User exists"
+        });
 
     } catch (error) {
-        next(error)
-
+        next(error);
     }
-}
+};

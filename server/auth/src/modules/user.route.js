@@ -1,5 +1,5 @@
 const express = require("express")
-const { email_signup, verify_email_otp, gmail_signin, email_signin, me, artist_by_id, users, artists } = require("./user.controller")
+const { email_signup, verify_email_otp, gmail_signin, email_signin, me, artist_by_id, user_by_id, check_user_exists } = require("./user.controller")
 const router = express.Router()
 const passport = require("passport")
 const { authMiddleware } = require("../middlewares/auth.middleware")
@@ -12,12 +12,12 @@ router.post("/email-signin", email_signin)
 
 
 router.get("/me", authMiddleware, me)
-router.get("/internal/users" , validateService(["MESSAGE_SERVICE"]) , users)
-router.get("/internal/artists" ,validateService(["MESSAGE_SERVICE"]) , artists)
+
 
 router.get("/internal/me", validateService(["ORDER_SERVICE"]), me)
 router.get("/internal/:id", validateService(["ORDER_SERVICE"]), artist_by_id)
 
+router.get("/internal/check/:id" , validateService(["MESSAGE_SERVICE"]) , check_user_exists)
 
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }))
 router.get("/google/callback", passport.authenticate("google", {
