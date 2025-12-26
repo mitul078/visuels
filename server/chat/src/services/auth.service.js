@@ -19,14 +19,6 @@ exports.check_exist = async (id, userId) => {
         return data
 
     } catch (error) {
-        console.error(
-            "Auth service error:",
-            error.response?.data || error.message
-        )
-
-        return {
-            valid: false,
-            msg: "Auth service unreachable or user invalid"
-        }
+        throw error
     }
 }
