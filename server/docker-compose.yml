@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  auth:
+    build: ./auth
+    container_name: auth-service
+    ports:
+      - "4001:4001"
+    env_file:
+      - ./auth/.env
+    
+  product:
+    build: ./product
+    container_name: product-service
+    ports:
+      - "4002:4002"
+    env_file:
+      - ./product/.env
+
+  order:
+    build: ./order
+    container_name: order-service
+    ports: 
+      - "4003:4003"
+    env_file: 
+      - ./order/.env
+
+  message: 
+    build: ./chat
+    container_name: message-service
+    ports: 
+      - "4004:4004"
+    env_file: 
+      - ./chat/.env
+
+  jobs:
+    build: ./jobs
+    container_name: job-service
+    ports: 
+      - "4005:4005"
+    env_file:
+      - ./jobs/.env
+  
