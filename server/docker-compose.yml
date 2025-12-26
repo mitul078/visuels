@@ -40,4 +40,20 @@ services:
       - "4005:4005"
     env_file:
       - ./jobs/.env
+
+  gateway: 
+    build: ./api-gateway
+    container_name: gateway-service
+    ports: 
+      - "4000:4000"
+    env_file:
+      - "./api-gateway/.env"
+    depends_on:
+      - auth
+      - product
+      - order
+      - message
+      - jobs
+
+
   
