@@ -1,17 +1,46 @@
+"use client"
 import React from 'react'
 import "./nav.scss"
+import { motion } from "motion/react"
+import { useState } from 'react'
+
 const Nav = () => {
+
+    const [isHover, setIsHover] = useState(false);
+    const [isFocus, setIsFocus] = useState(false);
+    const [value, setValue] = useState("");
+
+    const expanded = isHover || isFocus || value.length > 0;
+
     return (
         <div className='Nav'>
             <div className="left">
-                <h1><span>Visuels</span> -where arts connect</h1>
+                <h1 className='select-none'><span className='cursor-pointer'>Visuels</span> -where arts connect</h1>
             </div>
             <div className="right">
-                <div className="box">
-                    
+                <motion.div
+                    className="input-box"
+                    animate={{ width: expanded ? "20rem" : "2.5rem" }}
+                    transition={{ type: "spring", stiffness: 500, damping: 50 }}
+                    onHoverStart={() => setIsHover(true)}
+                    onHoverEnd={() => setIsHover(false)}
+                >
+                    <i className="search ri-search-fill"></i>
+
+                    <input
+                        type="text"
+                        placeholder="Type here..."
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                        onFocus={() => setIsFocus(true)}
+                        onBlur={() => setIsFocus(false)}
+                    />
+                </motion.div>
+
+                <div className="icon-box">
+                    <i className="icon ri-heart-add-2-fill"></i>
+                    <i className="icon ri-account-circle-fill"></i>
                 </div>
-                <div className="box"></div>
-                <div className="box"></div>
             </div>
         </div>
     )
