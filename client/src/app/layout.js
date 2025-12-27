@@ -5,7 +5,7 @@ import "./globals.css";
 import { useEffect } from "react";
 import { get_me } from "@/redux/features/auth/auth.thunk";
 import Redux from "@/redux/provider"
-import Nav from "@/components/Nav";
+import Nav from "@/components/Nav/Nav";
 
 const josefin = Josefin_Sans({
   subsets: ["latin"],

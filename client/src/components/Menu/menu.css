@@ -1,0 +1,35 @@
+.Menu {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  z-index: 100;
+}
+.Menu .container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 200;
+  width: 25rem;
+  height: 100%;
+  background-color: white;
+}
+.Menu .container .header {
+  width: 100%;
+  height: 4rem;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+.Menu .container .header h1 {
+  font-size: var(--font-medium);
+  cursor: pointer;
+}
+.Menu .container .header i {
+  cursor: pointer;
+  font-size: var(--font-medium);
+}/*# sourceMappingURL=menu.css.map */
