@@ -1,0 +1,6 @@
+.Home {
+  width: 100%;
+  height: calc(100% - 4.5rem);
+  background-color: var(--main-bg-color);
+  color: var(--text-color);
+}/*# sourceMappingURL=home.css.map */
