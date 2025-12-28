@@ -1,0 +1,135 @@
+.Otp {
+    width: 100%;
+    height: 100%;
+    background-image: url(../../../public//bg.avif);
+
+    .container {
+        width: 100%;
+        height: 100%;
+        background-image: url(../../../public//bg.avif);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        padding-right: 2rem;
+
+        @media (max-width:768px) {
+            padding: 0;
+        }
+
+        .box {
+            border-radius: .5em;
+            width: 40rem;
+
+            background-color: white;
+            color: rgba(15, 41, 101, 0.972);
+
+            @media (max-width: 768px) {
+                width: 100%;
+                height: 100%;
+            }
+
+            .header {
+                width: 100%;
+                margin-top: 1rem;
+
+                h1 {
+                    color: var(--text-color);
+                    font-weight: var(--font-medium-bold);
+                    user-select: none;
+                    text-align: center;
+                    font-size: var(--font-medium);
+                }
+            }
+
+            .top {
+                width: 100%;
+
+                h1 {
+                    text-align: center;
+                    font-size: var(--font-big);
+                    margin-top: 1rem;
+                    font-weight: 800;
+                }
+            }
+
+            p {
+                margin-top: 1rem;
+                font-size: var(--font-medium);
+                text-align: center;
+            }
+
+           
+
+            .boxes {
+                display: flex;
+                gap: 1rem;
+                justify-content: center;
+                margin-top: 1rem;
+
+                @media (max-width: 768px) {
+                    gap: .5rem;
+                }
+
+                input {
+                    width: 4rem;
+                    height: 4rem;
+                    text-align: center;
+                    font-size: 1.5rem;
+                    border-radius: .6rem;
+                    border: 2px solid #ddd;
+                    outline: none;
+                    background-color: var(--light-bg-box);
+
+                    @media (max-width:768px) {
+                        width: 3rem;
+                        height: 3rem;
+                    }
+
+                    &:focus {
+                        border-color: #19183B;
+                    }
+                }
+            }
+            .btn{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+            }
+
+            .btn button {
+                padding: .6rem 1rem;
+                font-size: var(--font-medium);
+                cursor: pointer;
+                border-radius: .6rem;
+                background: #19183B;
+                color: white;
+                font-weight: 600;
+
+                &:disabled {
+                    opacity: .5;
+                    cursor: not-allowed;
+                }
+            }
+
+            .timer {
+                text-align: center;
+                margin: .5rem 0;
+
+                .resend {
+                    background: none;
+                    color: #19183B;
+                    font-weight: 600;
+                }
+            }
+
+            .last {
+                padding: 2rem;
+
+            }
+        }
+    }
+}

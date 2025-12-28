@@ -1,0 +1,121 @@
+.Otp {
+  width: 100%;
+  height: 100%;
+  background-image: url(../../../public//bg.avif);
+}
+.Otp .container {
+  width: 100%;
+  height: 100%;
+  background-image: url(../../../public//bg.avif);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  padding-right: 2rem;
+}
+@media (max-width: 768px) {
+  .Otp .container {
+    padding: 0;
+  }
+}
+.Otp .container .box {
+  border-radius: 0.5em;
+  width: 40rem;
+  background-color: white;
+  color: rgba(15, 41, 101, 0.972);
+}
+@media (max-width: 768px) {
+  .Otp .container .box {
+    width: 100%;
+    height: 100%;
+  }
+}
+.Otp .container .box .header {
+  width: 100%;
+  margin-top: 1rem;
+}
+.Otp .container .box .header h1 {
+  color: var(--text-color);
+  font-weight: var(--font-medium-bold);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  text-align: center;
+  font-size: var(--font-medium);
+}
+.Otp .container .box .top {
+  width: 100%;
+}
+.Otp .container .box .top h1 {
+  text-align: center;
+  font-size: var(--font-big);
+  margin-top: 1rem;
+  font-weight: 800;
+}
+.Otp .container .box p {
+  margin-top: 1rem;
+  font-size: var(--font-medium);
+  text-align: center;
+}
+.Otp .container .box .boxes {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+@media (max-width: 768px) {
+  .Otp .container .box .boxes {
+    gap: 0.5rem;
+  }
+}
+.Otp .container .box .boxes input {
+  width: 4rem;
+  height: 4rem;
+  text-align: center;
+  font-size: 1.5rem;
+  border-radius: 0.6rem;
+  border: 2px solid #ddd;
+  outline: none;
+  background-color: var(--light-bg-box);
+}
+@media (max-width: 768px) {
+  .Otp .container .box .boxes input {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+.Otp .container .box .boxes input:focus {
+  border-color: #19183B;
+}
+.Otp .container .box .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.Otp .container .box .btn button {
+  padding: 0.6rem 1rem;
+  font-size: var(--font-medium);
+  cursor: pointer;
+  border-radius: 0.6rem;
+  background: #19183B;
+  color: white;
+  font-weight: 600;
+}
+.Otp .container .box .btn button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.Otp .container .box .timer {
+  text-align: center;
+  margin: 0.5rem 0;
+}
+.Otp .container .box .timer .resend {
+  background: none;
+  color: #19183B;
+  font-weight: 600;
+}
+.Otp .container .box .last {
+  padding: 2rem;
+}/*# sourceMappingURL=otp.css.map */

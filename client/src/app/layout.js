@@ -16,7 +16,7 @@ const josefin = Josefin_Sans({
 });
 
 
-const authRoutes = ["/signin", "/signup"]
+const authRoutes = ["/signin", "/signup" , "/verify-otp"]
 
 function InitAuth({ children }) {
   const path = usePathname()
@@ -29,14 +29,14 @@ function InitAuth({ children }) {
     dispatch(get_me());
   }, [dispatch])
   
-  useEffect(() => {
-    if (!loading && !user && !authRoutes.includes(path)) {
-      router.replace("/signup")
-    }
+  // useEffect(() => {
+  //   if (!loading && !user && !authRoutes.includes(path)) {
+  //     router.replace("/signup")
+  //   }
 
-  }, [user, loading, router , path])
+  // }, [user, loading, router , path])
 
-  if (loading) return null
+  // if (loading) return null
 
   return children
 }
