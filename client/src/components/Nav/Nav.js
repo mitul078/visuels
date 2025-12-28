@@ -4,6 +4,7 @@ import "./nav.scss"
 import { motion } from "motion/react"
 import { useState } from 'react'
 import Menu from '../Menu/Menu'
+import Like from '../Liked/Like'
 
 const Nav = () => {
 
@@ -11,6 +12,7 @@ const Nav = () => {
     const [isFocus, setIsFocus] = useState(false);
     const [value, setValue] = useState("");
     const [menuOpen, setMenuOpen] = useState(false);
+    const [likeOpen, setLikeOpen] = useState(false)
 
 
     const expanded = isHover || isFocus || value.length > 0;
@@ -42,13 +44,14 @@ const Nav = () => {
                     </motion.div>
 
                     <div className="icon-box">
-                        <i className="icon ri-heart-add-2-fill"></i>
+                        <i onClick={() => setLikeOpen(true)} className="icon ri-heart-add-2-fill"></i>
                         <i onClick={() => setMenuOpen(true)} className="icon ri-account-circle-fill"></i>
                     </div>
                 </div>
             </div>
 
             <Menu open={menuOpen} onClose={() => setMenuOpen(false)} />
+            <Like OLike={likeOpen} OnCloseLike={() => setLikeOpen(false)} />
         </>
 
     )

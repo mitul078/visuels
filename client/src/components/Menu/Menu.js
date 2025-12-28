@@ -29,11 +29,19 @@ const Menu = ({ open, onClose }) => {
                                 <h1>Menu</h1>
                                 <i onClick={onClose} className="ri-close-fill"></i>
                             </div>
+
+                            <div className="mini-container">
+                                <div className="box"><h1>Account</h1></div>
+                                <div className="box"><h1>Orders</h1></div>
+                                <div className="box"><h1>Setting</h1></div>
+                                <div className="box"><h1>Logout</h1></div>
+                            </div>
                         </motion.div>
                     </motion.div>
 
                 )
             }
+
         </AnimatePresence>
 
     )

@@ -1,13 +1,13 @@
-.Menu {
+.Like {
   position: fixed;
-  width: 100%;
-  height: 100%;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.45);
   z-index: 100;
 }
-.Menu .container {
+.Like .container {
   position: absolute;
   top: 0;
   right: 0;
@@ -15,13 +15,14 @@
   width: 25rem;
   height: 100%;
   background-color: white;
+  overflow-y: hidden;
 }
 @media (max-width: 768px) {
-  .Menu .container {
+  .Like .container {
     width: 100%;
   }
 }
-.Menu .container .header {
+.Like .container .header {
   width: 100%;
   height: 4rem;
   color: var(--text-color);
@@ -30,34 +31,27 @@
   justify-content: space-between;
   padding: 0 2rem;
 }
-.Menu .container .header h1 {
+.Like .container .header h1 {
   font-size: var(--font-medium);
   cursor: pointer;
 }
-.Menu .container .header i {
+.Like .container .header i {
   cursor: pointer;
   font-size: var(--font-medium);
 }
-.Menu .container .mini-container {
+.Like .container .grid-container {
   width: 100%;
-  height: 12rem;
-  display: flex;
-  flex-direction: column;
+  height: calc(100% - 5rem);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-row: auto;
   gap: 0.5rem;
   padding: 0 1rem;
+  overflow-y: auto;
 }
-.Menu .container .mini-container .box {
+.Like .container .grid-container .box {
+  aspect-ratio: 1/1;
   background-color: var(--light-bg-box);
+  border-radius: 0.5em;
   cursor: pointer;
-  border-radius: 0.3em;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 3rem;
-  font-size: var(--font-medium);
-  padding-left: 2rem;
-  transition: background-color 0.3s ease;
-}
-.Menu .container .mini-container .box:hover {
-  background-color: #8a8a8a;
-}/*# sourceMappingURL=menu.css.map */
+}/*# sourceMappingURL=like.css.map */
