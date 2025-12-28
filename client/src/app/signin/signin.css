@@ -1,9 +1,9 @@
-.Signup {
+.Signin {
   width: 100%;
   height: 100%;
   background-color: var(--main-bg-color);
 }
-.Signup .container {
+.Signin .container {
   width: 100%;
   height: 100%;
   background-image: url(../../../public//bg.avif);
@@ -16,11 +16,11 @@
   padding-right: 2rem;
 }
 @media (max-width: 768px) {
-  .Signup .container {
+  .Signin .container {
     padding: 0;
   }
 }
-.Signup .container .box {
+.Signin .container .box {
   border-radius: 0.5em;
   width: 40rem;
   height: 40rem;
@@ -28,16 +28,16 @@
   color: rgba(15, 41, 101, 0.972);
 }
 @media (max-width: 768px) {
-  .Signup .container .box {
+  .Signin .container .box {
     width: 100%;
     height: 100%;
   }
 }
-.Signup .container .box .header {
+.Signin .container .box .header {
   width: 100%;
   margin-top: 1rem;
 }
-.Signup .container .box .header h1 {
+.Signin .container .box .header h1 {
   color: var(--text-color);
   font-weight: var(--font-medium-bold);
   -webkit-user-select: none;
@@ -46,20 +46,20 @@
   text-align: center;
   font-size: var(--font-medium);
 }
-.Signup .container .box .top {
+.Signin .container .box .top {
   width: 100%;
   margin-top: 2rem;
 }
-.Signup .container .box .top h1 {
+.Signin .container .box .top h1 {
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
   text-align: center;
   font-size: 3rem;
-  line-height: 2.5rem;
+  line-height: 3rem;
   font-weight: 500;
 }
-.Signup .container .box form {
+.Signin .container .box form {
   display: flex;
   flex-direction: column;
   margin-top: 1rem;
@@ -69,11 +69,11 @@
   /* Placeholder styling */
 }
 @media (max-width: 768px) {
-  .Signup .container .box form {
+  .Signin .container .box form {
     padding: 0 var(--mobile-padding-x);
   }
 }
-.Signup .container .box form input {
+.Signin .container .box form input {
   width: 100%;
   height: 2.75rem;
   padding: 0 1rem;
@@ -86,33 +86,33 @@
   transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, transform 0.15s ease;
 }
 @media (max-width: 768px) {
-  .Signup .container .box form input {
+  .Signin .container .box form input {
     height: 3.5rem;
   }
 }
-.Signup .container .box form input:hover {
+.Signin .container .box form input:hover {
   background-color: #8e8e8e;
 }
-.Signup .container .box form input:focus {
+.Signin .container .box form input:focus {
   color: white;
   border-color: #2f6fed;
   background-color: #3c3c3c;
   box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
 }
-.Signup .container .box form input::-moz-placeholder {
+.Signin .container .box form input::-moz-placeholder {
   -moz-transition: opacity 0.2s ease;
   transition: opacity 0.2s ease;
 }
-.Signup .container .box form input::placeholder {
+.Signin .container .box form input::placeholder {
   transition: opacity 0.2s ease;
 }
-.Signup .container .box form input:focus::-moz-placeholder {
+.Signin .container .box form input:focus::-moz-placeholder {
   opacity: 0.6;
 }
-.Signup .container .box form input:focus::placeholder {
+.Signin .container .box form input:focus::placeholder {
   opacity: 0.6;
 }
-.Signup .container .box form .create {
+.Signin .container .box form .create {
   background-color: var(--text-color);
   margin-top: 1rem;
   padding: 0.5rem 0;
@@ -122,37 +122,31 @@
   font-size: var(--font-medium);
   transition: all 0.3s ease;
 }
-.Signup .container .box form .create:hover {
+.Signin .container .box form .create:hover {
   background-color: #3c3c3c;
   box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
 }
-.Signup .container .box form .create:active {
+.Signin .container .box form .create:active {
   scale: 0.9;
 }
-.Signup .container .box form .te {
+.Signin .container .box form .te {
   text-align: center;
   margin-top: 0.5rem;
   font-size: 1.5rem;
 }
-.Signup .container .box form .icon {
+.Signin .container .box form .icon {
   text-align: center;
 }
-.Signup .container .box form .icon i {
+.Signin .container .box form .icon i {
   order: 1;
   cursor: pointer;
   font-size: 2rem;
 }
-.Signup .container .box form .ts {
-  text-align: center;
-}
-.Signup .container .box form .ts span {
-  font-weight: 800;
-}
-.Signup .container .box form .signin {
+.Signin .container .box form .signup {
   text-align: center;
   margin-top: 1rem;
 }
-.Signup .container .box form .signin button {
+.Signin .container .box form .signup button {
   text-decoration: underline;
   cursor: pointer;
-}/*# sourceMappingURL=signup.css.map */
+}/*# sourceMappingURL=signin.css.map */
