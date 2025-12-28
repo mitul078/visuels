@@ -4,6 +4,7 @@ import { register_user } from '@/redux/features/auth/auth.thunk'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
+import "./signup.scss"
 
 const page = () => {
 
@@ -15,7 +16,7 @@ const page = () => {
     // }
 
     return (
-        <div>
+        <div className='Signup'>
             
         </div>
     )

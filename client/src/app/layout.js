@@ -1,11 +1,13 @@
 "use client"
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Josefin_Sans } from "next/font/google";
 import "./globals.css";
 import { useEffect } from "react";
 import { get_me } from "@/redux/features/auth/auth.thunk";
 import Redux from "@/redux/provider"
 import Nav from "@/components/Nav/Nav";
+import { useRouter, usePathname } from "next/navigation";
+
 
 const josefin = Josefin_Sans({
   subsets: ["latin"],
@@ -13,17 +15,34 @@ const josefin = Josefin_Sans({
   variable: "--font-josefin",
 });
 
+
+const authRoutes = ["/signin", "/signup"]
+
 function InitAuth({ children }) {
+  const path = usePathname()
 
   const dispatch = useDispatch()
+  const { user, loading } = useSelector((state) => state.auth)
+  const router = useRouter()
+  
   useEffect(() => {
     dispatch(get_me());
-  }, [])
+  }, [dispatch])
+  
+  useEffect(() => {
+    if (!loading && !user && !authRoutes.includes(path)) {
+      router.replace("/signup")
+    }
+
+  }, [user, loading, router , path])
+
+  if (loading) return null
 
   return children
 }
 
 export default function RootLayout({ children }) {
+  const path = usePathname()
   return (
     <html lang="en" className={josefin.variable}>
       <head>
@@ -35,7 +54,7 @@ export default function RootLayout({ children }) {
       <body>
         <Redux>
           <InitAuth>
-            <Nav />
+            {!authRoutes.includes(path) && <Nav />}
             {children}
           </InitAuth>
         </Redux>
