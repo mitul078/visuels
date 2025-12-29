@@ -1,13 +1,30 @@
 "use client"
 import React, { useState, useEffect, useRef } from 'react'
 import "./otp.scss"
+import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import Spinner from '@/components/Loading/Spinner';
+import { verify_user } from '@/redux/features/auth/auth.thunk';
+import { useRouter } from 'next/navigation';
 
 
 const page = () => {
+
+    const { user, error, loading } = useSelector(state => state.auth)
+    const dispatch = useDispatch()
+    const router = useRouter()
+
+    useEffect(() => {
+        if (!user && !loading) {
+            router.replace("/signup")
+        }
+    }, [user, loading])
+
     const OTP_LENGTH = 6;
     const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
     const [time, setTime] = useState(300);
     const inputsRef = useRef([]);
+    const { handleSubmit } = useForm()
 
     useEffect(() => {
         if (time === 0) return;
@@ -52,6 +69,24 @@ const page = () => {
         const sec = time % 60;
         return `${min}:${sec.toString().padStart(2, "0")}`;
     };
+
+
+    const onSubmit = async () => {
+
+        const data = {
+            email: user.email,
+            otp: otp.join("")
+        }
+
+        dispatch(verify_user(data))
+        router.push("/")
+
+    }
+
+    if (loading) {
+        return <Spinner />
+    }
+
     return (
         <div className='Otp'>
             <div className="container">
@@ -62,38 +97,44 @@ const page = () => {
                     <div className="top">
                         <h1>Verification Code</h1>
                     </div>
-                    <p>Verification code is sent to <br /> emailId</p>
-                    <div className="boxes" onPaste={handlePaste}>
-                        {otp.map((value, i) => (
-                            <input
-                                key={i}
-                                ref={el => (inputsRef.current[i] = el)}
-                                type="text"
-                                inputMode="numeric"
-                                maxLength={1}
-                                value={value}
-                                onChange={e => handleChange(e.target.value, i)}
-                                onKeyDown={e => handleKeyDown(e, i)}
-                                autoFocus={i === 0}
-                            />
-                        ))}
-                    </div>
+                    <p>Verification code is sent to <br /> {user?.email}</p>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <div className="boxes" onPaste={handlePaste}>
+                            {otp.map((value, i) => (
+                                <input
+                                    key={i}
+                                    ref={el => (inputsRef.current[i] = el)}
+                                    type="text"
+                                    inputMode="numeric"
+                                    maxLength={1}
+                                    value={value}
+                                    onChange={e => handleChange(e.target.value, i)}
+                                    onKeyDown={e => handleKeyDown(e, i)}
+                                    autoFocus={i === 0}
+                                />
+                            ))}
+                        </div>
 
-                    <div className="timer">
-                        {time > 0 ? (
-                            <span>Code expires in {formatTime()}</span>
-                        ) : (
-                            <button className="resend" onClick={() => setTime(300)}>
-                                Resend OTP
+                        <div className="timer">
+                            {time > 0 ? (
+                                <span>Code expires in {formatTime()}</span>
+                            ) : (
+                                <button
+                                    type="button"
+                                    className="resend"
+                                    onClick={() => setTime(300)}
+                                >
+                                    Resend OTP
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="btn">
+                            <button type="submit" disabled={!isOtpComplete}>
+                                Continue
                             </button>
-                        )}
-                    </div>
-
-                    <div className="btn">
-                        <button disabled={!isOtpComplete}>
-                            Continue
-                        </button>
-                    </div>
+                        </div>
+                    </form>
                     <p className='last'>The code is valid for <br /> five minute</p>
 
                 </div>

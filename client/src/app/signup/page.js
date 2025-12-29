@@ -8,11 +8,13 @@ import "./signup.scss"
 
 import Link from 'next/link'
 import Spinner from '@/components/Loading/Spinner'
+import { useRouter } from 'next/navigation'
 const page = () => {
 
     const { register, handleSubmit } = useForm()
     const dispatch = useDispatch()
     const [loading, setLoading] = useState(true)
+    const router = useRouter()
     useEffect(() => {
 
         const timer = setTimeout(() => {
@@ -24,9 +26,10 @@ const page = () => {
     }, [])
 
 
-    // const onSubmit = async (data) => {
-    //     dispatch(register_user(data))
-    // }
+    const onSubmit = async (data) => {
+        dispatch(register_user(data))
+        router.push("/verify-otp")
+    }
 
 
     if (loading) return <Spinner />
@@ -45,13 +48,13 @@ const page = () => {
                         <h1>account</h1>
                     </div>
 
-                    <form>
-                        <input type="text" placeholder='Email' />
-                        <input type="password" placeholder='Password' />
-                        <input type="text" placeholder='Username' />
-                        <input type="text" placeholder='Name' />
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <input {...register("email")} type="text" placeholder='Email' required />
+                        <input {...register("password")} type="password" placeholder='Password' required />
+                        <input {...register("username")} type="text" placeholder='Username' required />
+                        <input {...register("name")} type="text" placeholder='Name' required />
 
-                        <button className='create'>Create Account</button>
+                        <button type='submit' className='create'>Create Account</button>
 
                         <p className='te'>Or sign in with </p>
 
@@ -67,7 +70,7 @@ const page = () => {
                     </form>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

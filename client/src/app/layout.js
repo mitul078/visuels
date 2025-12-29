@@ -15,8 +15,7 @@ const josefin = Josefin_Sans({
   variable: "--font-josefin",
 });
 
-
-const authRoutes = ["/signin", "/signup" , "/verify-otp"]
+const auth = ["/signin", "/signup", "/verify-otp"]
 
 function InitAuth({ children }) {
   const path = usePathname()
@@ -24,24 +23,26 @@ function InitAuth({ children }) {
   const dispatch = useDispatch()
   const { user, loading } = useSelector((state) => state.auth)
   const router = useRouter()
-  
+
   useEffect(() => {
     dispatch(get_me());
   }, [dispatch])
-  
-  // useEffect(() => {
-  //   if (!loading && !user && !authRoutes.includes(path)) {
-  //     router.replace("/signup")
-  //   }
 
-  // }, [user, loading, router , path])
+  useEffect(() => {
+    if (!loading && !user && !auth.includes(path)) {
+      router.replace("/signup")
+    }
 
-  // if (loading) return null
+  }, [user, loading, router, path])
+
+  if (loading) return null
 
   return children
 }
 
 export default function RootLayout({ children }) {
+
+  const isAuth = ["/signin", "/signup", "/verify-otp"]
   const path = usePathname()
   return (
     <html lang="en" className={josefin.variable}>
@@ -54,7 +55,7 @@ export default function RootLayout({ children }) {
       <body>
         <Redux>
           <InitAuth>
-            {!authRoutes.includes(path) && <Nav />}
+            {!isAuth.includes(path) && <Nav />}
             {children}
           </InitAuth>
         </Redux>

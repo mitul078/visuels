@@ -36,7 +36,7 @@ const createProxy = (target, prefix) => {
 
 
 
-app.use("/auth", createProxy("http://auth:4001", "/api/v1/auth"))
+app.use("/auth", createProxy("http://localhost:4001", "/api/v1/auth"))
 
 app.use("/products", createProxy("http://product:4002", "/api/v1/products"))
 
@@ -44,7 +44,7 @@ app.use("/order", createProxy("http://order:4003", "/api/v1/order"))
 
 app.use("/message", createProxy("http://message:4004", "/api/v1/message"))
 
-app.use("/job", createProxy("http://jobs:4005", "/api/v1/job"))
+app.use("/job", createProxy("http://localhost:4005", "/api/v1/job"))
 
 
 
