@@ -1,24 +1,41 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import "./signin.scss"
 import Link from 'next/link'
-import Spinner from '@/components/Loading/Spinner'
-const page = () => {
 
-    const [loading, setLoading] = useState(true);
+import { useRouter } from 'next/navigation'
+import { useDispatch, useSelector } from 'react-redux'
+import { useForm } from 'react-hook-form'
+import { login_user } from '@/redux/features/auth/auth.thunk'
+import toast from 'react-hot-toast'
+import { clearAuthState } from '@/redux/features/auth/auth.slice'
+const page = () => {
+    const { error, success, loading } = useSelector((state) => state.auth)
+    const dispatch = useDispatch()
+    const router = useRouter()
+    const { register, handleSubmit } = useForm()
+
+
+
+    const onSubmit = async (data) => {
+        if(loading) return
+        dispatch(login_user(data))
+    }
+
     useEffect(() => {
 
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 3000)
+        if (error) {
+            toast.error(error)
+            dispatch(clearAuthState())
+        }
+        if (success) {
+            toast.success(success)
+            router.push("/")
+            dispatch(clearAuthState())
+        }
 
-        return () => clearTimeout(timer)
+    }, [error, success , dispatch])
 
-    }, [])
-
-    if (loading) {
-        return <Spinner />
-    }
 
     return (
         <div className='Signin'>
@@ -33,11 +50,11 @@ const page = () => {
                         <h1>Back</h1>
                     </div>
 
-                    <form>
-                        <input type="text" placeholder='Email' />
-                        <input type="password" placeholder='Password' />
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <input {...register("email")} type="text" placeholder='Email' />
+                        <input {...register("password")} type="password" placeholder='Password' />
 
-                        <button className='create'>Signin</button>
+                        <button type='submit' className='create' disabled={loading}>{loading ? "Signin..." : "Sign in"}</button>
 
                         <p className='te'>Or sign in with </p>
 

@@ -89,9 +89,11 @@ exports.verify_email_otp = async (req, res, next) => {
         }, process.env.JWT_SECRET, { expiresIn: "7d" })
 
 
+        const isProd = process.env.NODE_ENV === "production"
         res.cookie("token", token, {
-            secure: true,
+            secure: isProd,
             httpOnly: true,
+            sameSite: isProd ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
@@ -141,9 +143,11 @@ exports.email_signin = async (req, res, next) => {
             role: user.role
         }, process.env.JWT_SECRET, { expiresIn: "7d" })
 
+        const isProd = process.env.NODE_ENV === "production"
         res.cookie("token", token, {
+            secure: isProd,
             httpOnly: true,
-            secure: true,
+            sameSite: isProd ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
@@ -182,9 +186,11 @@ exports.gmail_signin = async (req, res, next) => {
             role: user.role
         }, process.env.JWT_SECRET, { expiresIn: "7d" })
 
+        const isProd = process.env.NODE_ENV === "production"
         res.cookie("token", token, {
+            secure: isProd,
             httpOnly: true,
-            secure: true,
+            sameSite: isProd ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
@@ -267,7 +273,7 @@ exports.check_user_exists = async (req, res, next) => {
         }
 
         const exists = await User.exists({ _id: id });
-        
+
 
         if (!exists) {
             return res.status(404).json({

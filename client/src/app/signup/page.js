@@ -3,36 +3,40 @@
 import { register_user } from '@/redux/features/auth/auth.thunk'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import "./signup.scss"
-
 import Link from 'next/link'
 import Spinner from '@/components/Loading/Spinner'
 import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
+import { clearAuthState, setOtpPending } from '@/redux/features/auth/auth.slice'
+
 const page = () => {
-
-    const { register, handleSubmit } = useForm()
     const dispatch = useDispatch()
-    const [loading, setLoading] = useState(true)
+    const { register, handleSubmit } = useForm()
     const router = useRouter()
-    useEffect(() => {
-
-        const timer = setTimeout(() => {
-            setLoading(false)
-        }, 2000)
-
-        return () => clearTimeout(timer)
-
-    }, [])
+    const { error, loading, success } = useSelector(state => state.auth)
 
 
     const onSubmit = async (data) => {
+        if(loading) return
         dispatch(register_user(data))
-        router.push("/verify-otp")
     }
 
+    useEffect(() => {
+        if (error) {
+            toast.error(error)
+            dispatch(clearAuthState())
+        }
 
-    if (loading) return <Spinner />
+        if (success) {
+            toast.success(success)
+            dispatch(setOtpPending(true))
+            router.push("/verify-otp")
+            dispatch(clearAuthState())
+        }
+
+    }, [error, success , dispatch])
 
     return (
         <div className='Signup'>
@@ -54,7 +58,7 @@ const page = () => {
                         <input {...register("username")} type="text" placeholder='Username' required />
                         <input {...register("name")} type="text" placeholder='Name' required />
 
-                        <button type='submit' className='create'>Create Account</button>
+                        <button type='submit' className='create' disabled={loading}>{loading ? "Wait..." : "Create Account"}</button>
 
                         <p className='te'>Or sign in with </p>
 

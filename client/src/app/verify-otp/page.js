@@ -6,19 +6,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '@/components/Loading/Spinner';
 import { verify_user } from '@/redux/features/auth/auth.thunk';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import { clearAuthState, setOtpPending } from '@/redux/features/auth/auth.slice';
 
 
 const page = () => {
-
-    const { user, error, loading } = useSelector(state => state.auth)
+    const { user, error } = useSelector(state => state.auth)
     const dispatch = useDispatch()
     const router = useRouter()
-
-    useEffect(() => {
-        if (!user && !loading) {
-            router.replace("/signup")
-        }
-    }, [user, loading])
 
     const OTP_LENGTH = 6;
     const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
@@ -71,21 +66,32 @@ const page = () => {
     };
 
 
-    const onSubmit = async () => {
 
-        const data = {
+
+
+    const onSubmit = () => {
+        dispatch(verify_user({
             email: user.email,
             otp: otp.join("")
+        }))
+            .unwrap()
+            .then(() => {
+                toast.success("Account verified");
+                dispatch(setOtpPending(false))
+                router.push("/");
+            });
+    };
+
+    useEffect(() => {
+
+        if (error) {
+            toast.error(error)
+            dispatch(clearAuthState())
         }
 
-        dispatch(verify_user(data))
-        router.push("/")
+    }, [error])
 
-    }
 
-    if (loading) {
-        return <Spinner />
-    }
 
     return (
         <div className='Otp'>

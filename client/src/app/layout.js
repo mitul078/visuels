@@ -1,13 +1,15 @@
-"use client"
+"use client";
+
 import { useDispatch, useSelector } from "react-redux";
 import { Josefin_Sans } from "next/font/google";
 import "./globals.css";
 import { useEffect } from "react";
 import { get_me } from "@/redux/features/auth/auth.thunk";
-import Redux from "@/redux/provider"
+import Redux from "@/redux/provider";
 import Nav from "@/components/Nav/Nav";
 import { useRouter, usePathname } from "next/navigation";
-
+import Spinner from "@/components/Loading/Spinner";
+import { Toaster } from "react-hot-toast";
 
 const josefin = Josefin_Sans({
   subsets: ["latin"],
@@ -15,35 +17,51 @@ const josefin = Josefin_Sans({
   variable: "--font-josefin",
 });
 
-const auth = ["/signin", "/signup", "/verify-otp"]
+const authRoutes = ["/signin", "/signup", "/verify-otp"];
 
 function InitAuth({ children }) {
-  const path = usePathname()
+  const path = usePathname();
+  const router = useRouter();
+  const dispatch = useDispatch();
 
-  const dispatch = useDispatch()
-  const { user, loading } = useSelector((state) => state.auth)
-  const router = useRouter()
+  const { user, authChecked, otpPending } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
     dispatch(get_me());
-  }, [dispatch])
+  }, [dispatch]);
 
   useEffect(() => {
-    if (!loading && !user && !auth.includes(path)) {
-      router.replace("/signup")
+    if (!authChecked) return;
+
+    // 🔴 NOT logged in
+    if (!user) {
+      if (path === "/signup") return;
+
+      if (path === "/verify-otp" && otpPending) return;
+
+      router.replace("/signup");
+      return;
     }
 
-  }, [user, loading, router, path])
+    // 🟢 Logged in → block auth routes
+    if (user && authRoutes.includes(path)) {
+      router.replace("/");
+    }
+  }, [authChecked, user, otpPending, path, router]);
 
-  if (loading) return null
+  if (!authChecked) return <Spinner />;
 
-  return children
+  return (
+    <>
+      {!authRoutes.includes(path) && <Nav />}
+      {children}
+    </>
+  );
 }
 
 export default function RootLayout({ children }) {
-
-  const isAuth = ["/signin", "/signup", "/verify-otp"]
-  const path = usePathname()
   return (
     <html lang="en" className={josefin.variable}>
       <head>
@@ -55,8 +73,8 @@ export default function RootLayout({ children }) {
       <body>
         <Redux>
           <InitAuth>
-            {!isAuth.includes(path) && <Nav />}
             {children}
+            <Toaster position="top-right" />
           </InitAuth>
         </Redux>
       </body>
