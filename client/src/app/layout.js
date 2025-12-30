@@ -24,9 +24,11 @@ function InitAuth({ children }) {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const { user, authChecked, otpPending } = useSelector(
+  const { authChecked, otpPending, isAuthenticated } = useSelector(
     (state) => state.auth
   );
+
+  console.log(isAuthenticated)
 
   useEffect(() => {
     dispatch(get_me());
@@ -35,9 +37,8 @@ function InitAuth({ children }) {
   useEffect(() => {
     if (!authChecked) return;
 
-    // 🔴 NOT logged in
-    if (!user) {
-      if (path === "/signup") return;
+    if (!isAuthenticated) {
+      if (path === "/signup" || path === "/signin") return;
 
       if (path === "/verify-otp" && otpPending) return;
 
@@ -45,11 +46,10 @@ function InitAuth({ children }) {
       return;
     }
 
-    // 🟢 Logged in → block auth routes
-    if (user && authRoutes.includes(path)) {
+    if (isAuthenticated && authRoutes.includes(path)) {
       router.replace("/");
     }
-  }, [authChecked, user, otpPending, path, router]);
+  }, [authChecked, otpPending, path, isAuthenticated]);
 
   if (!authChecked) return <Spinner />;
 

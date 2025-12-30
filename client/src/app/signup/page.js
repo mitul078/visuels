@@ -6,24 +6,31 @@ import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import "./signup.scss"
 import Link from 'next/link'
-import Spinner from '@/components/Loading/Spinner'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import toast from 'react-hot-toast'
-import { clearAuthState, setOtpPending } from '@/redux/features/auth/auth.slice'
+import { clearAuthState, setAuthError, setOtpPending } from '@/redux/features/auth/auth.slice'
 
 const page = () => {
     const dispatch = useDispatch()
     const { register, handleSubmit } = useForm()
     const router = useRouter()
     const { error, loading, success } = useSelector(state => state.auth)
+    const searchParams = useSearchParams()
+    const oauthError = searchParams.get("oauthError")
 
 
     const onSubmit = async (data) => {
-        if(loading) return
+        if (loading) return
         dispatch(register_user(data))
+        dispatch(setOtpPending(true))
     }
 
     useEffect(() => {
+
+        if (oauthError) {
+            dispatch(setAuthError("Google sign-in failed"));
+            router.replace("/signin");
+        }
         if (error) {
             toast.error(error)
             dispatch(clearAuthState())
@@ -31,12 +38,16 @@ const page = () => {
 
         if (success) {
             toast.success(success)
-            dispatch(setOtpPending(true))
             router.push("/verify-otp")
             dispatch(clearAuthState())
         }
 
-    }, [error, success , dispatch])
+    }, [error, success, dispatch, oauthError])
+
+
+    const oauthHandle = () => {
+        window.location.href = `${process.env.BACKEND_URL || "http://localhost:4000"}/auth/google`
+    }
 
     return (
         <div className='Signup'>
@@ -63,7 +74,7 @@ const page = () => {
                         <p className='te'>Or sign in with </p>
 
                         <div className="icon">
-                            <i className="ri-google-fill"></i>
+                            <i onClick={oauthHandle} className="ri-google-fill"></i>
                         </div>
 
                         <p className='ts'>By creating an account you agree to <span>Visuels's</span> <br />Terms of Services and Privacy Policy </p>

@@ -10,7 +10,8 @@ const authSlice = createSlice({
         isAuthenticated: false,
         authChecked: false,
         success: null,
-        otpPending: false
+        otpPending: false,
+        authErrMessage: null
     },
     reducers: {
         logout: (state) => {
@@ -24,6 +25,9 @@ const authSlice = createSlice({
         },
         setOtpPending: (state, action) => {
             state.otpPending = action.payload
+        },
+        setAuthError: (state, action) => {
+            state.authErrMessage = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -36,6 +40,7 @@ const authSlice = createSlice({
                 state.loading = false
                 state.user = action.payload
                 state.success = action.payload?.message || "Otp Sent"
+                state.otpPending = true
             })
             .addCase(register_user.rejected, (state, action) => {
                 state.loading = false
@@ -52,6 +57,7 @@ const authSlice = createSlice({
                 state.isAuthenticated = true
                 state.user = action.payload
                 state.success = action.payload?.message || "Verification Completed"
+                state.otpPending = false
             })
 
             .addCase(verify_user.rejected, (state, action) => {
@@ -87,6 +93,7 @@ const authSlice = createSlice({
                 state.isAuthenticated = true
                 state.authChecked = true
                 state.loading = false
+                state.authErrMessage = null
             })
 
             .addCase(get_me.rejected, (state, action) => {
@@ -98,6 +105,6 @@ const authSlice = createSlice({
 })
 
 
-export const { logout, clearAuthState, setOtpPending } = authSlice.actions
+export const { logout, clearAuthState, setOtpPending , setAuthError } = authSlice.actions
 
 export default authSlice.reducer

@@ -171,44 +171,40 @@ exports.email_signin = async (req, res, next) => {
 
 exports.gmail_signin = async (req, res, next) => {
     try {
+        const user = req.user;
 
-        const user = req.user
+        user.isEmailVerified = true;
+        user.otp = undefined;
+        user.otpExpiresAt = undefined;
+        user.lastLogin = Date.now();
 
-        user.isEmailVerified = true
-        user.otp = undefined
-        user.otpExpiresAt = undefined
-        user.lastLogin = Date.now()
+        await user.save();
 
-        await user.save()
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
 
-        const token = jwt.sign({
-            id: user._id,
-            role: user.role
-        }, process.env.JWT_SECRET, { expiresIn: "7d" })
+        const isProd = process.env.NODE_ENV === "production";
 
-        const isProd = process.env.NODE_ENV === "production"
         res.cookie("token", token, {
             secure: isProd,
             httpOnly: true,
             sameSite: isProd ? "none" : "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
 
-        res.status(200).json({
-            msg: "login successful",
-            user: {
-                username: user.username,
-                email: user.email,
-                name: user.name,
-                role: user.role
-            }
-        })
+        res.redirect(process.env.FRONTEND_URL);
 
     } catch (error) {
-        next(error)
-
+        console.error(error);
+        res.redirect(
+            `${process.env.FRONTEND_URL}/signin?oauthError=server_error`
+        );
     }
-}
+};
+
 
 
 exports.me = async (req, res, next) => {

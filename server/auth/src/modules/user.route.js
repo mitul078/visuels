@@ -17,13 +17,24 @@ router.get("/me", authMiddleware, me)
 router.get("/internal/me", validateService(["ORDER_SERVICE"]), me)
 router.get("/internal/:id", validateService(["ORDER_SERVICE"]), artist_by_id)
 
-router.get("/internal/check/:id" , validateService(["MESSAGE_SERVICE"]) , check_user_exists)
+router.get("/internal/check/:id", validateService(["MESSAGE_SERVICE"]), check_user_exists)
 
-router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }))
-router.get("/google/callback", passport.authenticate("google", {
-    failureRedirect: "/email-signin",
-    session: false
-}), gmail_signin)
+router.get("/google",
+    passport.authenticate("google", {
+        scope: ["profile", "email"]
+    })
+);
+
+router.get(
+    "/google/callback",
+    passport.authenticate("google", {
+        failureRedirect: `${process.env.FRONTEND_URL}/signin?oauthError=google_failed`,
+        session: false,
+    }),
+    gmail_signin
+);
+
+
 
 
 
