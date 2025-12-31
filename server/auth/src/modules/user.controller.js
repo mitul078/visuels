@@ -173,6 +173,12 @@ exports.gmail_signin = async (req, res, next) => {
     try {
         const user = req.user;
 
+        if (!user) {
+            return res.redirect(
+                `${process.env.FRONTEND_URL}/signin?oauthError=authentication_failed`
+            );
+        }
+
         user.isEmailVerified = true;
         user.otp = undefined;
         user.otpExpiresAt = undefined;
@@ -195,12 +201,18 @@ exports.gmail_signin = async (req, res, next) => {
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        res.redirect(process.env.FRONTEND_URL);
+        // Determine redirect based on action (signin or signup)
+        const state = req.query?.state || "signin";
+        const redirectPath = state === "signup" ? "/signup" : "/";
+        
+        res.redirect(`${process.env.FRONTEND_URL}${redirectPath}`);
 
     } catch (error) {
-        console.error(error);
+        console.error("Google OAuth error:", error);
+        const state = req.query?.state || "signin";
+        const redirectPath = state === "signup" ? "/signup" : "/signin";
         res.redirect(
-            `${process.env.FRONTEND_URL}/signin?oauthError=server_error`
+            `${process.env.FRONTEND_URL}${redirectPath}?oauthError=server_error`
         );
     }
 };

@@ -29,8 +29,34 @@ const page = () => {
     useEffect(() => {
 
         if (oauthError) {
-            dispatch(setAuthError("Google sign-in failed"));
-            router.replace("/signin");
+            let errorMessage = "Google sign-up failed. Please try again.";
+            
+            switch (oauthError) {
+                case "user_not_found":
+                    errorMessage = "User not found. Please sign up first.";
+                    break;
+                case "user_already_exists":
+                    errorMessage = "User already exists. Please sign in instead.";
+                    break;
+                case "no_email":
+                    errorMessage = "No email found from Google account.";
+                    break;
+                case "authentication_failed":
+                    errorMessage = "Google authentication failed. Please try again.";
+                    break;
+                case "server_error":
+                    errorMessage = "Server error occurred. Please try again later.";
+                    break;
+                case "invalid_action":
+                    errorMessage = "Invalid action. Please try again.";
+                    break;
+                default:
+                    errorMessage = "Google sign-up failed. Please try again.";
+            }
+            
+            toast.error(errorMessage);
+            // Clean up the URL
+            router.replace("/signup");
         }
         if (error) {
             toast.error(error)
@@ -43,11 +69,11 @@ const page = () => {
             dispatch(clearAuthState())
         }
 
-    }, [error, success, dispatch, oauthError])
+    }, [error, success, dispatch, oauthError, router])
 
 
     const oauthHandle = () => {
-        window.location.href = `${process.env.BACKEND_URL || "http://localhost:4000"}/auth/google`
+        window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000"}/auth/google?action=signup`
     }
 
     return (
