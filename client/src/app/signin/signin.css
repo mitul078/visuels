@@ -2,6 +2,7 @@
   width: 100%;
   height: 100%;
   background-color: var(--main-bg-color);
+  overflow: hidden;
 }
 .Signin .container {
   width: 100%;
@@ -21,16 +22,18 @@
   }
 }
 .Signin .container .box {
-  border-radius: 0.5em;
+  background-color: #ffffff;
+  color: rgba(15, 41, 101, 0.972);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+  border-radius: 18px;
   width: 40rem;
   height: 40rem;
-  background-color: white;
-  color: rgba(15, 41, 101, 0.972);
 }
 @media (max-width: 768px) {
   .Signin .container .box {
     width: 100%;
     height: 100%;
+    border-radius: 0;
   }
 }
 .Signin .container .box .header {
@@ -64,9 +67,6 @@
   flex-direction: column;
   margin-top: 1rem;
   padding: 0 8rem;
-  /* Hover = subtle feedback */
-  /* Focus = premium interaction */
-  /* Placeholder styling */
 }
 @media (max-width: 768px) {
   .Signin .container .box form {
@@ -79,9 +79,10 @@
   padding: 0 1rem;
   margin-top: 0.5rem;
   border-radius: 0.4em;
-  border: 1px solid transparent;
-  background-color: var(--light-bg-box);
-  color: var(--text-color);
+  background: #F8FAFC;
+  /* soft off-white */
+  border: 1px solid #CBD5E1;
+  color: #0F172A;
   font-size: 1.2rem;
   transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, transform 0.15s ease;
 }
@@ -90,14 +91,16 @@
     height: 3.5rem;
   }
 }
-.Signin .container .box form input:hover {
-  background-color: #8e8e8e;
+.Signin .container .box form input::-moz-placeholder {
+  color: #64748B;
+}
+.Signin .container .box form input::placeholder {
+  color: #64748B;
 }
 .Signin .container .box form input:focus {
-  color: white;
-  border-color: #2f6fed;
-  background-color: #3c3c3c;
-  box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #1E3A8A;
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.15);
+  background: #FFFFFF;
 }
 .Signin .container .box form input::-moz-placeholder {
   -moz-transition: opacity 0.2s ease;
@@ -113,18 +116,17 @@
   opacity: 0.6;
 }
 .Signin .container .box form .create {
-  background-color: var(--text-color);
   margin-top: 1rem;
   padding: 0.5rem 0;
   cursor: pointer;
   border-radius: 0.5em;
-  color: white;
+  background: #1E3A8A;
+  color: #FFFFFF;
   font-size: var(--font-medium);
   transition: all 0.3s ease;
 }
 .Signin .container .box form .create:hover {
-  background-color: #3c3c3c;
-  box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: #1E40AF;
 }
 .Signin .container .box form .create:active {
   scale: 0.9;
@@ -136,17 +138,30 @@
 }
 .Signin .container .box form .icon {
   text-align: center;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  color: #0F172A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+.Signin .container .box form .icon p {
+  font-size: 1.3rem;
 }
 .Signin .container .box form .icon i {
-  order: 1;
-  cursor: pointer;
   font-size: 2rem;
+}
+.Signin .container .box form .icon:hover {
+  background: #F1F5F9;
 }
 .Signin .container .box form .signup {
   text-align: center;
   margin-top: 1rem;
+  text-decoration: underline;
 }
 .Signin .container .box form .signup button {
-  text-decoration: underline;
   cursor: pointer;
 }/*# sourceMappingURL=signin.css.map */

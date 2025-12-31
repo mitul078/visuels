@@ -1,7 +1,7 @@
 "use client"
 
 import { register_user } from '@/redux/features/auth/auth.thunk'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import "./signup.scss"
@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { clearAuthState, setAuthError, setOtpPending } from '@/redux/features/auth/auth.slice'
+import { motion } from "framer-motion";
 
 const page = () => {
     const dispatch = useDispatch()
@@ -51,8 +52,20 @@ const page = () => {
 
     return (
         <div className='Signup'>
-            <div className="container">
-                <div className="box">
+            <motion.div
+                className="container"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+            >
+                <motion.div
+                    className="box"
+                    initial={{ opacity: 0, x: 100 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -100 }}
+                    transition={{ duration: .50, ease: "easeInOut" }}
+                >
                     <div className="header">
                         <h1>Visuels .com</h1>
                     </div>
@@ -73,8 +86,9 @@ const page = () => {
 
                         <p className='te'>Or sign in with </p>
 
-                        <div className="icon">
-                            <i onClick={oauthHandle} className="ri-google-fill"></i>
+                        <div onClick={oauthHandle} className="icon">
+                            <i className="ri-google-fill"></i>
+                            <p>Google</p>
                         </div>
 
                         <p className='ts'>By creating an account you agree to <span>Visuels's</span> <br />Terms of Services and Privacy Policy </p>
@@ -83,8 +97,8 @@ const page = () => {
                             Have an account? <Link href="/signin">Signin</Link>
                         </p>
                     </form>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </div >
     )
 }

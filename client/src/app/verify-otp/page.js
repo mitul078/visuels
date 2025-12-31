@@ -3,11 +3,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import "./otp.scss"
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import Spinner from '@/components/Loading/Spinner';
 import { verify_user } from '@/redux/features/auth/auth.thunk';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { clearAuthState, setOtpPending } from '@/redux/features/auth/auth.slice';
+import { motion } from "framer-motion"
 
 
 const page = () => {
@@ -95,8 +95,16 @@ const page = () => {
 
     return (
         <div className='Otp'>
-            <div className="container">
-                <div className="box">
+            <motion.div
+                className="container"
+                initial={{ opacity: 0, y: "100%" }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: "-100%" }}
+                transition={{ duration: .5, ease: "easeInOut" }}
+            >
+                <div
+                    className="box"
+                >
                     <div className="header">
                         <h1>Visuels .com</h1>
                     </div>
@@ -144,7 +152,7 @@ const page = () => {
                     <p className='last'>The code is valid for <br /> five minute</p>
 
                 </div>
-            </div>
+            </motion.div>
         </div>
     )
 }

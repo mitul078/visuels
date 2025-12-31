@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form'
 import { login_user } from '@/redux/features/auth/auth.thunk'
 import toast from 'react-hot-toast'
 import { clearAuthState } from '@/redux/features/auth/auth.slice'
+import { motion } from "framer-motion"
 const page = () => {
     const { error, success, loading } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
@@ -17,7 +18,7 @@ const page = () => {
 
 
     const onSubmit = async (data) => {
-        if(loading) return
+        if (loading) return
         dispatch(login_user(data))
     }
 
@@ -33,13 +34,25 @@ const page = () => {
             dispatch(clearAuthState())
         }
 
-    }, [error, success , dispatch])
+    }, [error, success, dispatch])
 
 
     return (
         <div className='Signin'>
-            <div className="container">
-                <div className="box">
+            <motion.div
+                className="container"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                transition={{ duration: .25, ease: "easeOut" }}
+            >
+                <motion.div
+                    className="box"
+                    initial={{opacity:0 , x:-100}}
+                    animate={{opacity:1 , x:0}}
+                    exit={{ opacity:0 , x:100}}
+                    transition={{duration: .50 , ease: "easeInOut"}}
+                >
                     <div className="header">
                         <h1>Visuels .com</h1>
                     </div>
@@ -59,6 +72,7 @@ const page = () => {
 
                         <div className="icon">
                             <i className="ri-google-fill"></i>
+                            <p>Google</p>
                         </div>
 
 
@@ -66,8 +80,8 @@ const page = () => {
                             Don't have an account? <Link href="/signup">Signup</Link>
                         </p>
                     </form>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </div>
     )
 }
