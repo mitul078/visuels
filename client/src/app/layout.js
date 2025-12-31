@@ -17,41 +17,35 @@ const josefin = Josefin_Sans({
   variable: "--font-josefin",
 });
 
+const publicRoutes = ["/signin", "/signup"];
 const authRoutes = ["/signin", "/signup", "/verify-otp"];
+const otpRoute = "/verify-otp";
 
 function InitAuth({ children }) {
   const path = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const { authChecked, otpPending, isAuthenticated } = useSelector(
-    (state) => state.auth
-  );
-
-  console.log(isAuthenticated)
+  const { authChecked, otpPending, isAuthenticated, loading } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(get_me());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!authChecked) return;
+  if (!authChecked || loading) {
+    return <Spinner />;
+  }
 
-    if (!isAuthenticated) {
-      if (path === "/signup" || path === "/signin") return;
+  if (!isAuthenticated && !publicRoutes.includes(path) && !(path === otpRoute && otpPending)) {
+    router.replace("/signin");
+    return <Spinner />;
+  }
 
-      if (path === "/verify-otp" && otpPending) return;
 
-      router.replace("/signup");
-      return;
-    }
-
-    if (isAuthenticated && authRoutes.includes(path)) {
-      router.replace("/");
-    }
-  }, [authChecked, otpPending, path, isAuthenticated]);
-
-  if (!authChecked) return <Spinner />;
+  if (isAuthenticated && authRoutes.includes(path)) {
+    router.replace("/");
+    return <Spinner />;
+  }
 
   return (
     <>
