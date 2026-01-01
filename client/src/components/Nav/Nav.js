@@ -5,7 +5,7 @@ import { motion } from "motion/react"
 import { useState } from 'react'
 import Menu from '../Menu/Menu'
 import Like from '../Liked/Like'
-
+import Link from 'next/link'
 const Nav = () => {
 
     const [isHover, setIsHover] = useState(false);
@@ -21,7 +21,7 @@ const Nav = () => {
         <>
             <div className='Nav'>
                 <div className="left">
-                    <h1 className='select-none'><span className='cursor-pointer'>Visuels</span> -where arts connect</h1>
+                    <h1 className='select-none'><span className='cursor-pointer'><Link href={"/"}>Visuels</Link></span> -where arts connect</h1>
                 </div>
                 <div className="right">
                     <motion.div
