@@ -12,12 +12,13 @@ import { clearAuthState, setAuthError, setOtpPending } from '@/redux/features/au
 import { motion } from "framer-motion";
 
 const page = () => {
+
     const dispatch = useDispatch()
     const { register, handleSubmit } = useForm()
     const router = useRouter()
-    const { error, loading, success } = useSelector(state => state.auth)
+    const { error, loading, success, authErrorMessage } = useSelector(state => state.auth)
     const searchParams = useSearchParams()
-    const oauthError = searchParams.get("oauthError")
+    const oauthError = searchParams.get("error")
 
 
     const onSubmit = async (data) => {
@@ -27,37 +28,11 @@ const page = () => {
     }
 
     useEffect(() => {
-
         if (oauthError) {
-            let errorMessage = "Google sign-up failed. Please try again.";
-            
-            switch (oauthError) {
-                case "user_not_found":
-                    errorMessage = "User not found. Please sign up first.";
-                    break;
-                case "user_already_exists":
-                    errorMessage = "User already exists. Please sign in instead.";
-                    break;
-                case "no_email":
-                    errorMessage = "No email found from Google account.";
-                    break;
-                case "authentication_failed":
-                    errorMessage = "Google authentication failed. Please try again.";
-                    break;
-                case "server_error":
-                    errorMessage = "Server error occurred. Please try again later.";
-                    break;
-                case "invalid_action":
-                    errorMessage = "Invalid action. Please try again.";
-                    break;
-                default:
-                    errorMessage = "Google sign-up failed. Please try again.";
-            }
-            
-            toast.error(errorMessage);
-            // Clean up the URL
-            router.replace("/signup");
+            dispatch(setAuthError(decodeURIComponent(oauthError)))
+            toast.error(authErrorMessage)
         }
+
         if (error) {
             toast.error(error)
             dispatch(clearAuthState())
@@ -66,14 +41,15 @@ const page = () => {
         if (success) {
             toast.success(success)
             router.push("/verify-otp")
+
             dispatch(clearAuthState())
         }
 
-    }, [error, success, dispatch, oauthError, router])
+    }, [error, success, dispatch, router, oauthError])
 
 
     const oauthHandle = () => {
-        window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000"}/auth/google?action=signup`
+        window.location.href = `${process.env.BACKEND_URL || "http://localhost:4000"}/auth/google?mode=signup`
     }
 
     return (

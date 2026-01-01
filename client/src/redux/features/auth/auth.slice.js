@@ -11,7 +11,7 @@ const authSlice = createSlice({
         authChecked: false,
         success: null,
         otpPending: false,
-        authErrMessage: null
+        authErrorMessage: null
     },
     reducers: {
         logout: (state) => {
@@ -27,7 +27,10 @@ const authSlice = createSlice({
             state.otpPending = action.payload
         },
         setAuthError: (state, action) => {
-            state.authErrMessage = action.payload
+            state.authErrorMessage = action.payload
+        },
+        clearAuthError: (state) => {
+            state.authErrorMessage = null
         }
     },
     extraReducers: (builder) => {
@@ -105,6 +108,6 @@ const authSlice = createSlice({
 })
 
 
-export const { logout, clearAuthState, setOtpPending , setAuthError } = authSlice.actions
+export const { logout, clearAuthState, setOtpPending, setAuthError, clearAuthError } = authSlice.actions
 
 export default authSlice.reducer

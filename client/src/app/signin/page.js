@@ -8,14 +8,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
 import { login_user } from '@/redux/features/auth/auth.thunk'
 import toast from 'react-hot-toast'
-import { clearAuthState } from '@/redux/features/auth/auth.slice'
+import { clearAuthError, clearAuthState, setAuthError } from '@/redux/features/auth/auth.slice'
 import { motion } from "framer-motion"
 const page = () => {
-    const { error, success, loading } = useSelector((state) => state.auth)
+    const { error, success, loading, authErrorMessage } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
     const router = useRouter()
     const searchParams = useSearchParams()
     const { register, handleSubmit } = useForm()
+    const oauthError = searchParams.get("error")
 
 
     const onSubmit = async (data) => {
@@ -24,53 +25,44 @@ const page = () => {
     }
 
     useEffect(() => {
-        // Handle OAuth errors
-        const oauthError = searchParams.get("oauthError")
-        if (oauthError) {
-            let errorMessage = "Google sign-in failed. Please try again.";
-            
-            switch (oauthError) {
-                case "user_not_found":
-                    errorMessage = "User not found. Please sign up first.";
-                    break;
-                case "user_already_exists":
-                    errorMessage = "User already exists. Please sign in instead.";
-                    break;
-                case "no_email":
-                    errorMessage = "No email found from Google account.";
-                    break;
-                case "authentication_failed":
-                    errorMessage = "Google authentication failed. Please try again.";
-                    break;
-                case "server_error":
-                    errorMessage = "Server error occurred. Please try again later.";
-                    break;
-                case "invalid_action":
-                    errorMessage = "Invalid action. Please try again.";
-                    break;
-                default:
-                    errorMessage = "Google sign-in failed. Please try again.";
-            }
-            
-            toast.error(errorMessage);
-            // Clean up the URL
-            router.replace("/signin");
-        }
+        if (!oauthError) return;
 
-        if (error) {
-            toast.error(error)
-            dispatch(clearAuthState())
-        }
-        if (success) {
-            toast.success(success)
-            router.push("/")
-            dispatch(clearAuthState())
-        }
+        dispatch(setAuthError(decodeURIComponent(oauthError)));
 
-    }, [error, success, dispatch, searchParams, router])
+        router.replace("/signin", { scroll: false });
+
+    }, [oauthError, dispatch, router]);
+
+    useEffect(() => {
+        if (!authErrorMessage) return;
+
+        toast.error(authErrorMessage);
+        dispatch(clearAuthError());
+
+    }, [authErrorMessage, dispatch]);
+
+    useEffect(() => {
+        if (!error) return;
+
+        toast.error(error);
+        dispatch(clearAuthState());
+
+    }, [error, dispatch]);
+
+    useEffect(() => {
+        if (!success) return;
+
+        toast.success(success);
+        router.push("/");
+        dispatch(clearAuthState());
+
+    }, [success, router, dispatch]);
+
+
+
 
     const oauthHandle = () => {
-        window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000"}/auth/google?action=signin`
+        window.location.href = `${process.env.BACKEND_URL || "http://localhost:4000"}/auth/google?mode=signin`
     }
 
 
