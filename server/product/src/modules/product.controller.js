@@ -58,13 +58,20 @@ exports.add_product = async (req, res, next) => {
             });
         }
 
+        const artistDetail = await get_artist_detail(userId, userId)
+
         const product = await Product.create({
             title,
             description,
             price,
             artistId: userId,
             images,
-            category: categoryDoc._id
+            category: categoryDoc._id,
+            artistDetail: {
+                name: artistDetail.name,
+                username: artistDetail.username,
+                email: artistDetail.email,
+            }
         })
 
         res.status(201).json({
@@ -78,32 +85,29 @@ exports.add_product = async (req, res, next) => {
 }
 
 
-//globally display the products
 exports.see_products = async (req, res, next) => {
     try {
 
-        const userId = req.authType === "USER" ? req.user.id : req.userId
+        const page = parseInt(req.query.page) || 1
+        const limit = 9
+        const skip = (page - 1) * limit
 
-        const products = await Product.find().populate("category", "name").lean()
 
-        const artistIds = [...new Set(products.map(p => p.artistId?.toString()))];
+        const products = await Product.find()
+            .populate("category", "name")
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 })
+            .lean()
 
-        const artists = await get_artist_detail(userId, artistIds)
-
-        const artistMap = {}
-
-        artists.forEach((artist) => {
-            artistMap[artist._id] = artist
-        })
-
-        const finalProduct = products.map(product => ({
-            ...product,
-            artist: artistMap[product.artistId] || null
-        }))
+        const hasMore = products.length === limit
 
         res.status(200).json({
             msg: "fetched products",
-            products: finalProduct
+            page,
+            limit,
+            hasMore,
+            products
         })
 
 
@@ -240,5 +244,94 @@ exports.get_logged_artist_products = async (req, res, next) => {
         next(error)
     }
 }
+
+exports.get_all_category = async (req, res, next) => {
+    try {
+
+        const allCategory = await Category.find({ isActive: true }).select("name")
+
+        res.status(200).json({ allCategory })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.category_wise_products = async (req, res, next) => {
+    try {
+
+        const { categoryId } = req.body
+        const page = parseInt(req.query.page) || 1
+        const limit = 9
+        const skip = (page - 1) * limit
+
+
+        const products = await Product.find({ category: categoryId })
+            .populate("category", "name")
+            .skip(skip)
+            .limit(limit)
+            .lean()
+
+        if (products.length === 0)
+            return res.status(200).json({ msg: "No products found", products: [] })
+
+        const hasMore = products.length === limit
+
+        return res.status(200).json({
+            page,
+            limit,
+            hasMore,
+            products
+        })
+
+    } catch (error) {
+        next(error)
+
+    }
+}
+
+exports.search = async (req, res, next) => {
+    try {
+
+        const q = req.query.q?.trim()
+        const page = 1
+        const limit = 9
+        const skip = (page - 1) * limit
+
+        const items = []
+
+        if (q) {
+            items.push(
+                { title: { $regex: q, $options: "i" } },
+                { description: { $regex: q, $options: "i" } },
+                { "artist.name": { $regex: q, $options: "i" } },
+                { "artist.username": { $regex: q, $options: "i" } },
+            )
+        }
+
+        const query = items.length ? { $or: items } : {}
+
+        const products = await Product.find(query)
+            .populate("category", "name")
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 })
+            .lean()
+
+        const hasMore = products.length === limit
+
+        res.status(200).json({
+            msg: "search results",
+            page,
+            limit,
+            hasMore,
+            products
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 
 

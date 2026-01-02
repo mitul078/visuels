@@ -11,6 +11,14 @@ const images = new mongoose.Schema({
 
 const productSchema = new mongoose.Schema({
     artistId: { type: String, required: true },
+    artistDetail: {
+        type: {
+            name: String,
+            email: String,
+            username: String
+        },
+        required: true
+    },
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
     price: { type: Number, required: true, min: 0 },

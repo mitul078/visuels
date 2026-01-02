@@ -16,7 +16,7 @@ router.get("/me", authMiddleware, me)
 
 router.get("/internal/me", validateService(["ORDER_SERVICE"]), me)
 router.post("/internal/artists/bulk", validateService(["PRODUCT_SERVICE"]), get_artists_bulk)
-router.get("/internal/:id", validateService(["ORDER_SERVICE"]), artist_by_id)
+router.get("/internal/:id", validateService(["ORDER_SERVICE", "PRODUCT_SERVICE"]), artist_by_id)
 
 router.get("/internal/check/:id", validateService(["MESSAGE_SERVICE"]), check_user_exists)
 
