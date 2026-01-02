@@ -39,6 +39,10 @@ const TopArtist = () => {
                         <div className="artist-image"></div>
                         <div className="artist-data">
                             <h1 className="name">Artist</h1>
+                            <div className="cta-btn">
+                                <h1 className="follow"><span>Followers: 100k</span></h1>
+                                <button className="btn-follow">Follow</button>
+                            </div>
                         </div>
                     </div>
                 </SwiperSlide>
@@ -47,33 +51,14 @@ const TopArtist = () => {
                         <div className="artist-image"></div>
                         <div className="artist-data">
                             <h1 className="name">Artist</h1>
+                            <div className="cta-btn">
+                                <h1 className="follow"><span>Followers: 100k</span></h1>
+                                <button className="btn-follow">Follow</button>
+                            </div>
                         </div>
                     </div>
                 </SwiperSlide>
-                <SwiperSlide>
-                    <div className="slide h-[500px]">
-                        <div className="artist-image"></div>
-                        <div className="artist-data">
-                            <h1 className="name">Artist</h1>
-                        </div>
-                    </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <div className="slide h-[500px]">
-                        <div className="artist-image"></div>
-                        <div className="artist-data">
-                            <h1 className="name">Artist</h1>
-                        </div>
-                    </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <div className="slide h-[500px]">
-                        <div className="artist-image"></div>
-                        <div className="artist-data">
-                            <h1 className="name">Artist</h1>
-                        </div>
-                    </div>
-                </SwiperSlide>
+                
 
 
             </Swiper>
@@ -82,14 +67,14 @@ const TopArtist = () => {
             <div className="absolute bottom-4 right-4 flex gap-3 z-10">
                 <button
                     ref={prevRef}
-                    className="w-10 h-10  icon"
+                    className="w-10 h-10  artist-icon"
                 >
                     ←
                 </button>
 
                 <button
                     ref={nextRef}
-                    className="w-10 h-10  icon"
+                    className="w-10 h-10  artist-icon"
                 >
                     →
                 </button>

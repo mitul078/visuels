@@ -5,6 +5,7 @@
     padding-bottom: 3rem;
     gap: 2rem;
     background-color: #E8E3D5;
+    border-radius: .5em;
 
     @media (max-width:768px) {
         padding: 1rem;
@@ -26,12 +27,16 @@
     }
 
     .artist-data {
+        line-height: 3rem;
+
         @media (max-width:768px) {
             align-self: flex-start;
         }
 
         .name {
             font-size: 4rem;
+            padding-left: 2rem;
+            padding-bottom: 1rem;
 
             @media (max-width:768px) {
                 padding-left: 1rem;
@@ -39,10 +44,60 @@
             }
         }
 
+        .cta-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+
+            @media (max-width:768px) {
+                gap: .5rem;
+                display: none;
+            }
+
+            span {
+                border: 2px solid black;
+                padding: 1rem 2rem;
+                border-radius: .5em;
+
+                @media (max-width:768px) {
+                    padding: 1rem;
+                }
+            }
+
+            .follow {
+                font-size: 2rem;
+
+                @media (max-width:768px) {
+                    font-size: 1.3rem;
+                }
+            }
+
+            .btn-follow {
+                background-color: #3c3c3c;
+                color: white;
+                padding: 0.5rem 4rem;
+                font-size: 1.5rem;
+                border-radius: .4em;
+                cursor: pointer;
+                transition: all .3s ease-out;
+
+                &:hover {
+                    transform: translateY(-5);
+                    background-color: #2d2d2d;
+                }
+
+                @media (max-width:768px) {
+                    padding: 0 1rem;
+                    font-size: 1.3rem;
+                }
+            }
+        }
     }
+
 }
 
-.icon{
+.artist-icon {
     display: flex;
     align-items: center;
     justify-content: center;
