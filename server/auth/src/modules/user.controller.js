@@ -284,3 +284,21 @@ exports.check_user_exists = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.get_artists_bulk = async (req, res, next) => {
+    try {
+
+        const { artistIds } = req.body
+
+        const users = await User.find({ _id: { $in: artistIds } }).select("name email username")
+
+        res.status(200).json({
+            users
+        })
+
+
+    } catch (error) {
+        next(error)
+
+    }
+}

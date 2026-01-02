@@ -3,6 +3,7 @@ const Category = require("./category.model")
 const AppError = require("../middlewares/AppError")
 const imagekit = require("../config/imagekit")
 const slugify = require("slugify")
+const { get_artist_detail } = require("../services/auth.service")
 
 
 
@@ -81,11 +82,28 @@ exports.add_product = async (req, res, next) => {
 exports.see_products = async (req, res, next) => {
     try {
 
-        const products = await Product.find().populate("category", "name")
+        const userId = req.authType === "USER" ? req.user.id : req.userId
+
+        const products = await Product.find().populate("category", "name").lean()
+
+        const artistIds = [...new Set(products.map(p => p.artistId?.toString()))];
+
+        const artists = await get_artist_detail(userId, artistIds)
+
+        const artistMap = {}
+
+        artists.forEach((artist) => {
+            artistMap[artist._id] = artist
+        })
+
+        const finalProduct = products.map(product => ({
+            ...product,
+            artist: artistMap[product.artistId] || null
+        }))
 
         res.status(200).json({
             msg: "fetched products",
-            products
+            products: finalProduct
         })
 
 
