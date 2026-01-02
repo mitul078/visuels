@@ -1,6 +1,7 @@
-"use client"
 import React from 'react'
-import "./artist.scss"
+import "./profile.scss"
+
+
 const page = () => {
     return (
         <div>

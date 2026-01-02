@@ -3,8 +3,8 @@ import React from 'react'
 import "./nav.scss"
 import { motion } from "motion/react"
 import { useState } from 'react'
-import Menu from '../Menu/Menu'
-import Like from '../Liked/Like'
+import Menu from '@/components/Menu/Menu'
+import Like from '@/components/Liked/Like'
 import Link from 'next/link'
 const Nav = () => {
 

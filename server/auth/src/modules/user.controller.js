@@ -11,7 +11,7 @@ const mongoose = require("mongoose")
 exports.email_signup = async (req, res, next) => {
     try {
 
-        const { email, username, name, password } = req.body
+        const { email, username, name, password, role } = req.body
 
         const userExists = await User.findOne({
             $or: [{ email }, { username }]
@@ -20,12 +20,12 @@ exports.email_signup = async (req, res, next) => {
         if (userExists)
             return next(new AppError("User already exists", 400))
 
-
-
         const hashPass = await bcrypt.hash(password, 10)
 
         const otp = generate_otp()
         const hashOtp = await bcrypt.hash(otp, 10)
+
+
 
         const user = await User.create({
             email,
@@ -34,10 +34,17 @@ exports.email_signup = async (req, res, next) => {
             authProvider: "EMAIL",
             username,
             name,
-            password: hashPass
+            password: hashPass,
+            role,
+
         })
 
-
+        if (user.role !== "ARTIST") {
+            user.artistCreated = undefined
+            user.artistStatus = undefined
+            user.rules = undefined
+        }
+        await user.save()
 
         await publishToQueue("AUTH_SERVICE:EMAIL_OTP", {
             email: user.email,
@@ -178,6 +185,12 @@ exports.gmail_signin = async (req, res, next) => {
         user.otpExpiresAt = undefined;
         user.lastLogin = Date.now();
 
+        if (user.role !== "ARTIST") {
+            user.rules = undefined
+            user.artistStatus = undefined
+            user.artistCreated = undefined
+        }
+
         await user.save();
 
         const token = jwt.sign(
@@ -221,6 +234,8 @@ exports.me = async (req, res, next) => {
             user: {
                 email: user.email,
                 username: user.username,
+                role: user.role,
+                name: user.name
             }
         })
 

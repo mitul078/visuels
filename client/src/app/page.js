@@ -8,14 +8,6 @@ const page = () => {
 
   return (
     <div className='Home'>
-      <section className='nav'>
-        <div className="box"><h1><Link href={"/"}>Home</Link></h1></div>
-        <div className="box"><h1><Link href={"/products"}>Products</Link></h1></div>
-        <div className="box"><h1><Link href={"/artists"}>Artists</Link></h1></div>
-        <div className="box"><h1><Link href={"/orders"}>Orders</Link></h1></div>
-        <div className="box"><h1><Link href={"/messages"}>Messages</Link></h1></div>
-      </section>
-
       <section className='content'>
 
 

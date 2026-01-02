@@ -13,8 +13,14 @@ passport.use(
         },
         async (req, accessToken, refreshToken, profile, done) => {
             try {
-                const mode = req.query.state;
+                const { mode, role } = JSON.parse(req.query.state)
+
+                if (!["signin", "signup"].includes(mode)) {
+                    return done(null, false, { message: "Invalid auth mode" });
+                }
+
                 const email = profile.emails?.[0]?.value;
+
 
                 if (!email) {
                     return done(null, false, { message: "EmailId not found in google" });
@@ -34,20 +40,36 @@ passport.use(
                     if (user)
                         return done(null, false, { message: "User already exists" })
 
+                    if (!["USER", "ARTIST"].includes(role)) {
+                        return done(null, false, { message: "Invalid role" });
+                    }
+
+
                     user = await User.create({
                         googleId: profile?.id,
                         name: profile.displayName || "user",
                         email,
                         username: email.split("@")[0],
                         authProvider: "GOOGLE",
-                        isEmailVerified: true
+                        isEmailVerified: true,
+                        role
                     })
+
+
                     await publishToQueue("AUTH_SERVICE:USER_CREATED", {
                         username: user.username,
                         email: user.email,
                         role: user.role,
                         name: user.name,
                     })
+
+                    if (user.role !== "ARTIST") {
+                        user.rules = undefined
+                        user.artistCreated = undefined
+                        user.artistStatus = undefined
+                    }
+
+                    await user.save()
 
                     return done(null, user)
                 }

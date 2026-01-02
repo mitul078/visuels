@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react'
 import "./signin.scss"
 import Link from 'next/link'
-
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
@@ -106,7 +105,7 @@ const page = () => {
 
 
                         <p className="signup">
-                            Don't have an account? <Link href="/signup">Signup</Link>
+                            Don't have an account? <Link href="/auth/signup">Signup</Link>
                         </p>
                     </form>
                 </motion.div>

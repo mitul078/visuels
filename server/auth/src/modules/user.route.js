@@ -22,25 +22,26 @@ router.get("/internal/check/:id", validateService(["MESSAGE_SERVICE"]), check_us
 
 router.get("/google", (req, res, next) => {
     const { mode } = req.query
+    const { role } = req.query
 
     if (!mode || !["signin", "signup"].includes(mode)) {
         return res.status(400).send("Mode is required and must be 'signup' or 'signin'");
     }
     passport.authenticate("google", {
         scope: ["profile", "email"],
-        state: mode,
+        state: JSON.stringify({ mode, role }),
     })(req, res, next)
 })
 
 router.get("/google/callback", (req, res, next) => {
     passport.authenticate("google", { session: false, }, (err, user, info) => {
         if (err) {
-            return res.redirect(`${process.env.FRONTEND_URL}/signin?error=GOOGLE_FAILED`)
+            return res.redirect(`${process.env.FRONTEND_URL}/auth/signin?error=GOOGLE_FAILED`)
         }
 
         if (!user) {
             const error = encodeURIComponent(info?.message || "AUTH_FAILED")
-            return res.redirect(`${process.env.FRONTEND_URL}/signin?error=${error}`)
+            return res.redirect(`${process.env.FRONTEND_URL}/auth/signin?error=${error}`)
         }
         req.user = user
         return gmail_signin(req, res, next)
