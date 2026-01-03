@@ -87,22 +87,46 @@ exports.add_product = async (req, res, next) => {
 
 exports.see_products = async (req, res, next) => {
     try {
-
         const page = parseInt(req.query.page) || 1
         const limit = 9
         const skip = (page - 1) * limit
 
+        const { category, q } = req.query
+        const filter = {}
 
-        const products = await Product.find()
+
+        if (category) {
+            const categoryDoc = await Category.findOne({ slug: category, isActive: true }).select("_id name")
+
+            if (!categoryDoc) {
+                return res.status(200).json({
+                    products: [],
+                    page,
+                    hasMore: false
+                })
+            }
+            filter.category = categoryDoc._id
+        }
+
+        if (q) {
+            filter.$or = [
+                { title: { $regex: q, $options: "i" } },
+                { description: { $regex: q, $options: "i" } }
+            ]
+        }
+
+        const products = await Product.find(filter)
             .populate("category", "name")
+            .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
-            .sort({ createdAt: -1 })
             .lean()
 
-        const hasMore = products.length === limit
+        const totalProduct = await Product.countDocuments(filter)
+        const hasMore = skip + products.length < totalProduct
 
-        res.status(200).json({
+
+        return res.status(200).json({
             msg: "fetched products",
             page,
             limit,
@@ -257,81 +281,7 @@ exports.get_all_category = async (req, res, next) => {
     }
 }
 
-exports.category_wise_products = async (req, res, next) => {
-    try {
 
-        const { categoryId } = req.body
-        const page = parseInt(req.query.page) || 1
-        const limit = 9
-        const skip = (page - 1) * limit
-
-
-        const products = await Product.find({ category: categoryId })
-            .populate("category", "name")
-            .skip(skip)
-            .limit(limit)
-            .lean()
-
-        if (products.length === 0)
-            return res.status(200).json({ msg: "No products found", products: [] })
-
-        const hasMore = products.length === limit
-
-        return res.status(200).json({
-            page,
-            limit,
-            hasMore,
-            products
-        })
-
-    } catch (error) {
-        next(error)
-
-    }
-}
-
-exports.search = async (req, res, next) => {
-    try {
-
-        const q = req.query.q?.trim()
-        const page = 1
-        const limit = 9
-        const skip = (page - 1) * limit
-
-        const items = []
-
-        if (q) {
-            items.push(
-                { title: { $regex: q, $options: "i" } },
-                { description: { $regex: q, $options: "i" } },
-                { "artist.name": { $regex: q, $options: "i" } },
-                { "artist.username": { $regex: q, $options: "i" } },
-            )
-        }
-
-        const query = items.length ? { $or: items } : {}
-
-        const products = await Product.find(query)
-            .populate("category", "name")
-            .skip(skip)
-            .limit(limit)
-            .sort({ createdAt: -1 })
-            .lean()
-
-        const hasMore = products.length === limit
-
-        res.status(200).json({
-            msg: "search results",
-            page,
-            limit,
-            hasMore,
-            products
-        })
-
-    } catch (error) {
-        next(error)
-    }
-}
 
 
 
