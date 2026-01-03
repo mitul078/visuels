@@ -251,12 +251,11 @@ exports.delete_product = async (req, res, next) => {
 exports.get_logged_artist_products = async (req, res, next) => {
     try {
 
-        const userId = req.authType === "USER" ? req.user.id : req.userId
-
+        const userId = req.user.id
         const products = await Product.find({ artistId: userId })
 
         if (products.length === 0)
-            return next(new AppError("No products found", 404))
+            return res.status(200).json({ products: [] })
 
         res.status(200).json({
             msg: "fetched products",

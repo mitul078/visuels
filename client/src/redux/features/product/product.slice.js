@@ -56,6 +56,7 @@ const productSlice = createSlice({
             .addCase(get_artist_product.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload
+                
             })
 
             .addCase(get_all_category.pending, (state) => {

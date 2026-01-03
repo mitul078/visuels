@@ -1,13 +1,12 @@
 "use client"
-import React, { useEffect } from 'react'
-import "./create_product.scss"
-import { useState } from 'react'
-import { motion } from "framer-motion"
-import { useDispatch, useSelector } from 'react-redux'
-import { create_product } from '@/redux/features/product/product.thunk'
-import toast from 'react-hot-toast'
+import ProductSkeleton from '@/components/Skeleton/ProductSkeleton'
 import { clearState } from '@/redux/features/product/product.slice'
-import Spinner from '@/components/Loading/Spinner'
+import { create_product } from '@/redux/features/product/product.thunk'
+import { motion } from "framer-motion"
+import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { useDispatch, useSelector } from 'react-redux'
+import "./create_product.scss"
 
 
 const CreateProduct = () => {
@@ -110,8 +109,9 @@ const CreateProduct = () => {
 
     return (
         <>
+            {loading && <ProductSkeleton />}
             {
-                loading ? <Spinner /> : (
+                !loading && (
                     <motion.div
                         key="create"
                         className="create-product-view"
@@ -274,6 +274,7 @@ const CreateProduct = () => {
                             </motion.button>
                         </form>
                     </motion.div>
+
                 )
             }
         </>

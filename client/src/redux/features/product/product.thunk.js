@@ -51,7 +51,7 @@ export const get_products = createAsyncThunk("get/products", async ({ page = 1, 
 export const get_all_category = createAsyncThunk("get/category", async (_, { rejectWithValue }) => {
     try {
 
-        const res = await axios.get("/products/categories")
+        const res = await axios.get("/products/categories", { withCredentials: true })
         return res.data.allCategory
 
     } catch (error) {
@@ -62,7 +62,7 @@ export const get_all_category = createAsyncThunk("get/category", async (_, { rej
 export const get_artist_product = createAsyncThunk("product/artist", async (_, { rejectWithValue }) => {
     try {
 
-        const res = await axios.get(`/products/me/products`)
+        const res = await axios.get(`/products/me/products`, { withCredentials: true })
         return res.data.products
 
     } catch (error) {
