@@ -1,5 +1,5 @@
 const express = require("express")
-const { email_signup, verify_email_otp, gmail_signin, email_signin, me, artist_by_id, check_user_exists, get_artists_bulk } = require("./user.controller")
+const { email_signup, verify_email_otp, gmail_signin, email_signin, me, artist_by_id, check_user_exists } = require("./user.controller")
 const router = express.Router()
 const passport = require("passport")
 const { authMiddleware } = require("../middlewares/auth.middleware")
@@ -15,7 +15,7 @@ router.get("/me", authMiddleware, me)
 
 
 router.get("/internal/me", validateService(["ORDER_SERVICE"]), me)
-router.post("/internal/artists/bulk", validateService(["PRODUCT_SERVICE"]), get_artists_bulk)
+
 router.get("/internal/:id", validateService(["ORDER_SERVICE", "PRODUCT_SERVICE"]), artist_by_id)
 
 router.get("/internal/check/:id", validateService(["MESSAGE_SERVICE"]), check_user_exists)

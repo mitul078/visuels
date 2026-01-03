@@ -37,7 +37,7 @@ const productSchema = new mongoose.Schema({
 productSchema.index({ price: 1 });
 productSchema.index({ createdAt: -1 });
 productSchema.index({ status: 1, isActive: 1 });
-productSchema.index({ category: 1 });
+
 
 
 module.exports = mongoose.model("Product", productSchema)

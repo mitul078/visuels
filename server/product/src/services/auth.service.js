@@ -1,7 +1,7 @@
 const axios = require("axios")
 const { getServiceToken } = require("../utils/serviceToken")
 
-exports.get_artist_detail = async (userId, artistId) => {
+exports.get_artist_detail = async (userId , artistId) => {
     const token = getServiceToken()
 
     try {

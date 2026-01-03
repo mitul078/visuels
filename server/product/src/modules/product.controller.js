@@ -12,8 +12,7 @@ exports.add_product = async (req, res, next) => {
     try {
 
         const { title, description, price, category } = req.body
-
-        const userId = req.authType === "USER" ? req.user.id : req.userId
+        const userId = req.user.id
 
         if (!req.files || req.files.length === 0) {
             return next(new AppError("At least one image is required", 400));

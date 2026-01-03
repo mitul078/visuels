@@ -12,11 +12,17 @@ const productSlice = createSlice({
         hasMore: true,
         page: 1,
         artistProducts: [],
-        categories: []
+        categories: [],
+        success: null
     },
     reducers: {
         setSelectedProduct: (state, action) => {
             state.selectedProduct = action.payload.product
+        },
+        clearState: (state) => {
+            state.error = null
+            state.success = null
+            state.loading = false
         }
     },
     extraReducers: (builder) => {
@@ -67,6 +73,7 @@ const productSlice = createSlice({
             .addCase(create_product.fulfilled, (state, action) => {
                 state.loading = false
                 state.products.unshift(action.payload)
+                state.success = "Product Listed Successfully"
             })
             .addCase(create_product.rejected, (state, action) => {
                 state.loading = false
@@ -81,6 +88,7 @@ const productSlice = createSlice({
                 const index = state.products.findIndex(p => p._id === action.payload._id)
                 if (index !== -1) {
                     state.products[index] = action.payload
+                    state.success = "Product updated successfully"
                 }
             })
             .addCase(update_product.rejected, (state, action) => {
@@ -94,6 +102,7 @@ const productSlice = createSlice({
             .addCase(delete_product.fulfilled, (state, action) => {
                 state.loading = false
                 state.products = state.products.filter(p => p._id !== action.payload)
+                state.success = "Product deleted successfully"
             })
             .addCase(delete_product.rejected, (state, action) => {
                 state.loading = false
@@ -102,6 +111,6 @@ const productSlice = createSlice({
     }
 })
 
-export const { setSelectedProduct } = productSlice.actions
+export const { setSelectedProduct, clearState } = productSlice.actions
 
 export default productSlice.reducer
