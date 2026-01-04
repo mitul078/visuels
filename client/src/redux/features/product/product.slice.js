@@ -84,19 +84,30 @@ const productSlice = createSlice({
 
             .addCase(update_product.pending, (state) => {
                 state.loading = true
+                state.error = null
+                state.success = null
             })
+
             .addCase(update_product.fulfilled, (state, action) => {
                 state.loading = false
-                const index = state.products.findIndex(p => p._id === action.payload._id)
+
+                const index = state.products.findIndex(
+                    p => p._id === action.payload._id
+                )
                 if (index !== -1) {
                     state.products[index] = action.payload
-                    state.success = "Product updated successfully"
                 }
+
+                state.selectedProduct = action.payload
+
+                state.success = "Product updated successfully"
             })
+
             .addCase(update_product.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload
             })
+
 
             .addCase(delete_product.pending, (state) => {
                 state.pending = true
@@ -126,6 +137,6 @@ const productSlice = createSlice({
     }
 })
 
-export const { clearState , clearSelectedProduct } = productSlice.actions
+export const { clearState, clearSelectedProduct } = productSlice.actions
 
 export default productSlice.reducer

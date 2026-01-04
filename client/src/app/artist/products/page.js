@@ -7,7 +7,7 @@ import CreateProduct from '@/components/Artist/AddProduct/CreateProduct'
 import GetProduct from '@/components/Artist/GetProduct/GetProduct'
 
 const page = () => {
-    const [activeView, setActiveView] = useState('create'); // 'create' or 'list'
+    const [activeView, setActiveView] = useState('list'); // 'create' or 'list'
 
 
 

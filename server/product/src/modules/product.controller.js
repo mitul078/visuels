@@ -192,68 +192,81 @@ exports.product_by_id = async (req, res, next) => {
     }
 }
 
-//productId
 exports.update_product = async (req, res, next) => {
     try {
-
         const { id } = req.params
         const userId = req.authType === "USER" ? req.user.id : req.userId
 
         const product = await Product.findOne({ _id: id, artistId: userId })
-
         if (!product) {
             return next(new AppError("Product not found or unauthorized", 404))
         }
 
-        const { price, title, shortDescription, width, height, depth, orientation, unit, material, category, description } = req.body
+        const {
+            title,
+            shortDescription,
+            description,
+            price,
+            material,
+            category,
+            artistNote,
+            story,
+            certified,
+            handMade,
+            frameInclude,
+            width,
+            height,
+            depth,
+            orientation,
+            unit,
+        } = req.body
 
-        if (title) product.title = title
-        if (shortDescription) product.shortDescription = shortDescription
+        // 🔹 Simple fields
+        if (title !== undefined) product.title = title
+        if (shortDescription !== undefined) product.shortDescription = shortDescription
+        if (description !== undefined) product.description = description
+        if (material !== undefined) product.material = material
+        if (artistNote !== undefined) product.artistNote = artistNote
+        if (story !== undefined) product.story = story
 
-        if (description) product.description = description
+        // 🔹 Boolean fields
+        if (certified !== undefined) product.certified = certified
+        if (handMade !== undefined) product.handMade = handMade
+        if (frameInclude !== undefined) product.frameInclude = frameInclude
 
-        if (price !== undefined && product.price !== price) {
-            product.price = price
-        }
+        // 🔹 Price
+        if (price !== undefined) product.price = Number(price)
 
-        if (width !== undefined || product.productDimension.width !== width) {
-            product.productDimension.width = width
-        }
-        if (height !== undefined || product.productDimension.height !== height) {
-            product.productDimension.height = height
-        }
-        if (depth !== undefined || product.productDimension.depth !== depth) {
-            product.productDimension.depth = depth
-        }
+        // 🔹 Dimensions
+        if (width !== undefined) product.productDimension.width = Number(width)
+        if (height !== undefined) product.productDimension.height = Number(height)
+        if (depth !== undefined) product.productDimension.depth = Number(depth)
 
-        const allowedOrientation = ["LANDSCAPE", "PORTRAIT", "SQUARE"]
-        if (orientation) {
-            if (!allowedOrientation.includes(orientation)) {
-                return next(new AppError("Orientation must be LANDSCAPE, PORTRAIT OR SQUARE", 400))
+        // 🔹 Orientation
+        if (orientation !== undefined) {
+            const allowed = ["LANDSCAPE", "PORTRAIT", "SQUARE"]
+            if (!allowed.includes(orientation)) {
+                return next(new AppError("Invalid orientation", 400))
             }
             product.productDimension.orientation = orientation
         }
 
-        const allowedUnit = ["CM", "INCH"]
-        if (unit) {
-            if (!allowedUnit.includes(unit)) {
-                return next(new AppError("Unit must be CM or INCH", 400))
+        // 🔹 Unit
+        if (unit !== undefined) {
+            const allowed = ["CM", "INCH"]
+            if (!allowed.includes(unit)) {
+                return next(new AppError("Invalid unit", 400))
             }
             product.productDimension.unit = unit
         }
 
-        if (material) product.material = material
-
-        if (category) {
-            const slug = slugify(category, { lower: true });
-
-            let categoryDoc = await Category.findOne({ slug });
+        // 🔹 Category
+        if (category !== undefined) {
+            const slug = slugify(category, { lower: true })
+            let categoryDoc = await Category.findOne({ slug })
 
             if (!categoryDoc) {
-                categoryDoc = await Category.create({
-                    name: category,
-                    slug
-                });
+                categoryDoc = await Category.create({ name: category, slug })
             }
 
             product.category = categoryDoc._id
@@ -263,16 +276,13 @@ exports.update_product = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: "Product updated successfully",
-            product
+            product,
         })
-
-
     } catch (error) {
         next(error)
-
     }
 }
+
 
 //productId
 exports.delete_product = async (req, res, next) => {
@@ -317,7 +327,7 @@ exports.get_logged_artist_products = async (req, res, next) => {
         const userId = req.user.id
         const products = await Product.find({ artistId: userId })
             .select("title shortDescription isActive views likes status category images price createdAt updatedAt")
-            .populate("category" , "name")
+            .populate("category", "name")
 
         if (products.length === 0)
             return res.status(200).json({ products: [] })

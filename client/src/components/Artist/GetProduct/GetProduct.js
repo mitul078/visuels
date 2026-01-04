@@ -3,9 +3,12 @@ import React, { useEffect, useState } from 'react'
 import "./get_product.scss"
 import { motion } from "framer-motion"
 import { useDispatch, useSelector } from 'react-redux'
-import { get_artist_product, get_full_product } from '@/redux/features/product/product.thunk'
+import { delete_product, get_artist_product, get_full_product } from '@/redux/features/product/product.thunk'
 import UpdateProduct from '../UpdateProduct/UpdateProduct'
+import SeeProduct from '../SeeProduct/SeeProduct'
 import GetProductSkeleton from '@/components/Skeleton/GetProductSkeleton'
+import toast from 'react-hot-toast'
+import { clearState } from '@/redux/features/product/product.slice'
 
 
 const GetProduct = () => {
@@ -17,13 +20,52 @@ const GetProduct = () => {
 
     }, [dispatch])
 
-    const { artistProducts, loading } = useSelector((state) => state.product)
+    const { artistProducts, loading, success, error } = useSelector((state) => state.product)
 
     const [open, setOpen] = useState(false) //update-box
-    const handleUpdate = (productId) => {
+    const [seeOpen, setSeeOpen] = useState(false) //see-product-box
+    const [selectedProductId, setSelectedProductId] = useState(null)
+
+    const handleUpdate = (productId, e) => {
+        e?.stopPropagation()
+        if (loading) return
         dispatch(get_full_product({ productId }))
         setOpen(true)
     }
+
+    const handleSeeProduct = (productId, e) => {
+        e?.stopPropagation()
+        if (loading) return
+        setSelectedProductId(productId)
+        setSeeOpen(true)
+    }
+
+
+    const handleDelete = (pid) => {
+        if (loading) return
+
+        const isConfirm = confirm("Are you sure you want to delete the product")
+        if (isConfirm) dispatch(delete_product(pid))
+
+    }
+
+    useEffect(() => {
+        if (!success) return
+
+        toast.success(success)
+        dispatch(get_artist_product())
+
+        dispatch(clearState())
+    }, [success , dispatch])
+
+    useEffect(() => {
+        if (!error) return
+
+        toast.error(error)
+
+        dispatch(clearState())
+
+    }, [error, dispatch])
 
     return (
         <>
@@ -89,6 +131,7 @@ const GetProduct = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.3, delay: index * 0.1 }}
                                     whileHover={{ y: -5 }}
+                                    onClick={() => handleSeeProduct(product._id)}
                                 >
                                     <div className="card-image-wrapper">
                                         <div className="product-image-placeholder">
@@ -98,10 +141,10 @@ const GetProduct = () => {
                                             {product.status}
                                         </div>
                                         <div className="card-actions">
-                                            <button className="action-btn edit-btn" title="Edit">
-                                                <i onClick={() => handleUpdate(product._id)} className="ri-pencil-line"></i>
+                                            <button className="action-btn edit-btn" title="Edit" onClick={(e) => handleUpdate(product._id, e)}>
+                                                <i className="ri-pencil-line"></i>
                                             </button>
-                                            <button className="action-btn delete-btn" title="Delete">
+                                            <button onClick={() => handleDelete(product._id)} className="action-btn delete-btn" title="Delete">
                                                 <i className="ri-delete-bin-line"></i>
                                             </button>
                                         </div>
@@ -139,9 +182,10 @@ const GetProduct = () => {
                             ))}
                         </div>
                     )}
-                    <UpdateProduct open={open} onClose={() => setOpen(false)} />
                 </motion.div>
             )}
+            <UpdateProduct open={open} onClose={() => setOpen(false)} />
+            <SeeProduct open={seeOpen} onClose={() => setSeeOpen(false)} productId={selectedProductId} />
         </>
 
     )
