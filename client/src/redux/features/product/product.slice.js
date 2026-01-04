@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { create_product, delete_product, get_all_category, get_artist_product, get_products, update_product } from "./product.thunk";
+import { create_product, delete_product, get_all_category, get_artist_product, get_full_product, get_products, update_product } from "./product.thunk";
 
 
 const productSlice = createSlice({
@@ -16,14 +16,15 @@ const productSlice = createSlice({
         success: null
     },
     reducers: {
-        setSelectedProduct: (state, action) => {
-            state.selectedProduct = action.payload.product
-        },
         clearState: (state) => {
             state.error = null
             state.success = null
             state.loading = false
+        },
+        clearSelectedProduct: (state) => {
+            state.selectedProduct = null
         }
+
     },
     extraReducers: (builder) => {
         builder
@@ -56,7 +57,7 @@ const productSlice = createSlice({
             .addCase(get_artist_product.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload
-                
+
             })
 
             .addCase(get_all_category.pending, (state) => {
@@ -109,9 +110,22 @@ const productSlice = createSlice({
                 state.loading = false
                 state.error = action.payload
             })
+
+
+            .addCase(get_full_product.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(get_full_product.fulfilled, (state, action) => {
+                state.loading = false
+                state.selectedProduct = action.payload
+            })
+            .addCase(get_full_product.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload
+            })
     }
 })
 
-export const { setSelectedProduct, clearState } = productSlice.actions
+export const { clearState , clearSelectedProduct } = productSlice.actions
 
 export default productSlice.reducer

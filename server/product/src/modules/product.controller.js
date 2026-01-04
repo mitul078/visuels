@@ -132,8 +132,8 @@ exports.see_products = async (req, res, next) => {
         }
 
         const products = await Product.find(filter)
-            .populate("category", "name")
             .select("title price shortDescription category isActive rating likes views images certified")
+            .populate("category", "name")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
@@ -315,7 +315,9 @@ exports.get_logged_artist_products = async (req, res, next) => {
     try {
 
         const userId = req.user.id
-        const products = await Product.find({ artistId: userId }).select("title shortDescription isActive views likes status category images price createdAt updatedAt")
+        const products = await Product.find({ artistId: userId })
+            .select("title shortDescription isActive views likes status category images price createdAt updatedAt")
+            .populate("category" , "name")
 
         if (products.length === 0)
             return res.status(200).json({ products: [] })

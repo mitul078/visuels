@@ -1,5 +1,5 @@
 "use client"
-import ProductSkeleton from '@/components/Skeleton/ProductSkeleton'
+import ProductSkeleton from '@/components/Skeleton/AddProductSkeleton'
 import { clearState } from '@/redux/features/product/product.slice'
 import { create_product } from '@/redux/features/product/product.thunk'
 import { motion } from "framer-motion"
@@ -96,14 +96,10 @@ const CreateProduct = () => {
         if (formData.depth) data.append("depth", formData.depth)
         data.append("orientation", formData.orientation)
         data.append("unit", formData.unit)
+        data.append("description" , formData.description)
 
         imagePreviews.forEach((img) => (data.append("images", img.file)))
-
-        console.log("FORM STATE 👉", formData);
-        console.log("IMAGES 👉", imagePreviews);
-
-        // dispatch(create_product(data))
-
+        dispatch(create_product(data))
     }
 
     useEffect(() => {
@@ -137,7 +133,7 @@ const CreateProduct = () => {
             shortDescription: ''
         })
         setImagePreviews([])
-        // dispatch(clearState())
+        dispatch(clearState())
 
     }, [success, dispatch])
 

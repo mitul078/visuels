@@ -70,3 +70,15 @@ export const get_artist_product = createAsyncThunk("product/artist", async (_, {
 
     }
 })
+
+export const get_full_product = createAsyncThunk("product/detail", async ({ productId }, { rejectWithValue }) => {
+    try {
+
+        const res = await axios.get(`/products/${productId}`)
+
+        return res.data.product
+
+    } catch (error) {
+        return rejectWithValue(error.response?.data?.message || "Product detail error")
+    }
+})
