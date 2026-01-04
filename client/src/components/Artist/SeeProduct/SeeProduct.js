@@ -62,7 +62,7 @@ const SeeProduct = ({ open, onClose, productId }) => {
                         ) : (
                             selectedProduct && (
                                 <div className="see-product-content">
-                                    {/* Image Gallery Section */}
+                                    
                                     <div className="product-images-section">
                                         <div className="main-image-container">
                                             <img

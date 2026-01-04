@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react'
 import "./product.scss"
 import { motion, AnimatePresence } from "framer-motion"
 import { useDispatch, useSelector } from 'react-redux'
-import { get_all_category, get_products } from '@/redux/features/product/product.thunk'
+import { get_all_category, get_full_product, get_products } from '@/redux/features/product/product.thunk'
 import toast from 'react-hot-toast'
 import { clearState } from '@/redux/features/product/product.slice'
+import { useRouter } from 'next/navigation'
 
 const page = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
@@ -13,6 +14,7 @@ const page = () => {
     const [sortBy, setSortBy] = useState('featured');
     const [showFilters, setShowFilters] = useState(false);
     const { products, loading, error, success, categories, hasMore } = useSelector((state) => state.product)
+    const router = useRouter()
 
     const dispatch = useDispatch()
 
@@ -38,6 +40,12 @@ const page = () => {
         dispatch(clearState())
 
     }, [])
+
+    const handleRouting = (id) => {
+        dispatch(get_full_product({ productId:id }))
+        router.push(`/user/products/${id}`)
+    }
+
 
     return (
         <div className='Product'>
@@ -183,9 +191,9 @@ const page = () => {
 
             {products.length === 0 && (
                 <motion.div
-                    initial={{opacity:0 , y:20}}
-                    animate={{opacity:1 , y:0}}
-                    transition={{duration: .4 , ease: "easeOut"}}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: .4, ease: "easeOut" }}
                     className='fallback'
                 >
 
@@ -234,7 +242,9 @@ const page = () => {
                                     <span className="amount">{product.price.toLocaleString()}</span>
                                 </div>
                                 <div className="product-btn">
-                                    <button>See Detail</button>
+                                    <button
+                                        onClick={() => handleRouting(product._id)}
+                                    >See Detail</button>
                                 </div>
                             </div>
                         </div>
