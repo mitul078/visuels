@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .create-product-view {
   width: 100%;
   max-width: 900px;
@@ -78,7 +79,8 @@
   color: #ff6b6b;
 }
 .create-product-view .form-section .form-input,
-.create-product-view .form-section .form-textarea,
+.create-product-view .form-section .form-textarea-long,
+.create-product-view .form-section .form-textarea-short,
 .create-product-view .form-section .form-select {
   width: 100%;
   padding: 1rem 1.25rem;
@@ -92,22 +94,29 @@
   outline: none;
 }
 .create-product-view .form-section .form-input:focus,
-.create-product-view .form-section .form-textarea:focus,
+.create-product-view .form-section .form-textarea-long:focus,
+.create-product-view .form-section .form-textarea-short:focus,
 .create-product-view .form-section .form-select:focus {
   border-color: var(--btn-bg);
   box-shadow: 0 0 0 3px rgba(25, 24, 59, 0.1);
 }
-.create-product-view .form-section .form-input::-moz-placeholder, .create-product-view .form-section .form-textarea::-moz-placeholder, .create-product-view .form-section .form-select::-moz-placeholder {
+.create-product-view .form-section .form-input::-moz-placeholder, .create-product-view .form-section .form-textarea-long::-moz-placeholder, .create-product-view .form-section .form-textarea-short::-moz-placeholder, .create-product-view .form-section .form-select::-moz-placeholder {
   color: var(--text-color);
   opacity: 0.4;
 }
 .create-product-view .form-section .form-input::placeholder,
-.create-product-view .form-section .form-textarea::placeholder,
+.create-product-view .form-section .form-textarea-long::placeholder,
+.create-product-view .form-section .form-textarea-short::placeholder,
 .create-product-view .form-section .form-select::placeholder {
   color: var(--text-color);
   opacity: 0.4;
 }
-.create-product-view .form-section .form-textarea {
+.create-product-view .form-section .form-textarea .short {
+  resize: vertical;
+  min-height: 60px;
+  line-height: 1.6;
+}
+.create-product-view .form-section .form-textarea .long {
   resize: vertical;
   min-height: 150px;
   line-height: 1.6;
@@ -148,9 +157,78 @@
   color: var(--text-color);
   opacity: 0.6;
 }
+.create-product-view .form-section .checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  background-color: var(--main-bg-color);
+  border-radius: 0.75rem;
+  border: 2px solid #E8E3D5;
+}
+.create-product-view .form-section .checkbox-group .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.create-product-view .form-section .checkbox-group .checkbox-label .checkbox-input {
+  display: none;
+}
+.create-product-view .form-section .checkbox-group .checkbox-label .checkbox-input:checked + .checkbox-custom {
+  background-color: var(--btn-bg);
+  border-color: var(--btn-bg);
+}
+.create-product-view .form-section .checkbox-group .checkbox-label .checkbox-input:checked + .checkbox-custom::after {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.create-product-view .form-section .checkbox-group .checkbox-label .checkbox-custom {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid #E8E3D5;
+  border-radius: 0.4rem;
+  background-color: white;
+  position: relative;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+.create-product-view .form-section .checkbox-group .checkbox-label .checkbox-custom::after {
+  content: "✓";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+.create-product-view .form-section .checkbox-group .checkbox-label .checkbox-text {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: var(--font-medium-bold);
+  color: var(--text-color);
+}
+.create-product-view .form-section .checkbox-group .checkbox-label .checkbox-text i {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+.create-product-view .form-section .checkbox-group .checkbox-label .checkbox-text span {
+  color: #ff6b6b;
+}
+.create-product-view .form-section .checkbox-group .checkbox-label:hover .checkbox-custom {
+  border-color: var(--btn-bg);
+}
 .create-product-view .form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1.5rem;
 }
 @media (max-width: 768px) {

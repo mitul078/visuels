@@ -11,7 +11,9 @@ const { get_artist_detail } = require("../services/auth.service")
 exports.add_product = async (req, res, next) => {
     try {
 
-        const { title, description, price, category } = req.body
+        const { title, shortDescription, price, category, material, frameInclude, handMade, artistNote, certified, story, width, height, depth, orientation, unit, description } = req.body
+
+
         const userId = req.user.id
 
         if (!req.files || req.files.length === 0) {
@@ -41,8 +43,6 @@ exports.add_product = async (req, res, next) => {
         const images = upload.map((img, idx) => ({
             fileId: img.fileId,
             url: img.url,
-            width: img.width,
-            height: img.height,
             isPrimary: idx === 0
         }))
 
@@ -61,16 +61,30 @@ exports.add_product = async (req, res, next) => {
 
         const product = await Product.create({
             title,
-            description,
+            shortDescription,
             price,
             artistId: userId,
             images,
             category: categoryDoc._id,
+            description,
             artistDetail: {
                 name: artistDetail.name,
                 username: artistDetail.username,
                 email: artistDetail.email,
-            }
+            },
+            certified,
+            material,
+            productDimension: {
+                width,
+                height,
+                depth,
+                orientation,
+                unit
+            },
+            frameInclude,
+            handMade,
+            artistNote,
+            story
         })
 
         res.status(201).json({
@@ -110,12 +124,16 @@ exports.see_products = async (req, res, next) => {
         if (q) {
             filter.$or = [
                 { title: { $regex: q, $options: "i" } },
+                { shortDescription: { $regex: q, $options: "i" } },
+                { material: { $regex: q, $options: "i" } },
+                { category: { $regex: q, $options: "i" } },
                 { description: { $regex: q, $options: "i" } }
             ]
         }
 
         const products = await Product.find(filter)
             .populate("category", "name")
+            .select("title price shortDescription category isActive rating likes views images certified")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
@@ -187,13 +205,58 @@ exports.update_product = async (req, res, next) => {
             return next(new AppError("Product not found or unauthorized", 404))
         }
 
-        const { price, title, description } = req.body
+        const { price, title, shortDescription, width, height, depth, orientation, unit, material, category, description } = req.body
 
         if (title) product.title = title
+        if (shortDescription) product.shortDescription = shortDescription
+
         if (description) product.description = description
 
-        if (price !== undefined || product.price !== price) {
+        if (price !== undefined && product.price !== price) {
             product.price = price
+        }
+
+        if (width !== undefined || product.productDimension.width !== width) {
+            product.productDimension.width = width
+        }
+        if (height !== undefined || product.productDimension.height !== height) {
+            product.productDimension.height = height
+        }
+        if (depth !== undefined || product.productDimension.depth !== depth) {
+            product.productDimension.depth = depth
+        }
+
+        const allowedOrientation = ["LANDSCAPE", "PORTRAIT", "SQUARE"]
+        if (orientation) {
+            if (!allowedOrientation.includes(orientation)) {
+                return next(new AppError("Orientation must be LANDSCAPE, PORTRAIT OR SQUARE", 400))
+            }
+            product.productDimension.orientation = orientation
+        }
+
+        const allowedUnit = ["CM", "INCH"]
+        if (unit) {
+            if (!allowedUnit.includes(unit)) {
+                return next(new AppError("Unit must be CM or INCH", 400))
+            }
+            product.productDimension.unit = unit
+        }
+
+        if (material) product.material = material
+
+        if (category) {
+            const slug = slugify(category, { lower: true });
+
+            let categoryDoc = await Category.findOne({ slug });
+
+            if (!categoryDoc) {
+                categoryDoc = await Category.create({
+                    name: category,
+                    slug
+                });
+            }
+
+            product.category = categoryDoc._id
         }
 
         await product.save()
@@ -217,7 +280,7 @@ exports.delete_product = async (req, res, next) => {
         const { id } = req.params
         const userId = req.authType === "USER" ? req.user.id : req.userId
 
-        const product = await Product.findOne({ _id: id, artistId: userId })
+        const product = await Product.findOne({ _id: id, artistId: userId }).select("_id images")
 
         if (!product) {
             return next(new AppError("Product not found or unauthorized", 404))
@@ -252,7 +315,7 @@ exports.get_logged_artist_products = async (req, res, next) => {
     try {
 
         const userId = req.user.id
-        const products = await Product.find({ artistId: userId })
+        const products = await Product.find({ artistId: userId }).select("title shortDescription isActive views likes status category images price createdAt updatedAt")
 
         if (products.length === 0)
             return res.status(200).json({ products: [] })

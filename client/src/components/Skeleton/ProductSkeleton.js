@@ -7,22 +7,17 @@ const ProductSkeleton = ({ className = "" }) => {
             </div>
 
             <div className="product-form">
-                {/* image section */}
                 <div className="sk-box large"></div>
 
-                {/* title */}
                 <div className="sk-box"></div>
 
-                {/* description */}
                 <div className="sk-box textarea"></div>
 
-                {/* price + category */}
                 <div className="sk-row">
                     <div className="sk-box"></div>
                     <div className="sk-box"></div>
                 </div>
 
-                {/* button */}
                 <div className="sk-button"></div>
             </div>
         </div>

@@ -1,7 +1,10 @@
 "use client"
-import React from 'react'
+import React, { useEffect } from 'react'
 import "./get_product.scss"
 import { motion } from "framer-motion"
+import { useDispatch, useSelector } from 'react-redux'
+import { clearState } from '@/redux/features/product/product.slice'
+import { get_artist_product } from '@/redux/features/product/product.thunk'
 
 const GetProduct = () => {
 
@@ -37,6 +40,16 @@ const GetProduct = () => {
             createdAt: new Date()
         }
     ];
+
+    const dispatch = useDispatch()
+    useEffect(() => {
+
+        dispatch(get_artist_product())
+
+    }, [dispatch])
+
+    const { artistProducts } = useSelector((state) => state.product)
+    console.log(artistProducts)
 
 
     return (
