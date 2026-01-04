@@ -107,9 +107,12 @@ exports.see_products = async (req, res, next) => {
         const { category, q } = req.query
         const filter = {}
 
-
+        // ✅ Category filter (slug-based)
         if (category) {
-            const categoryDoc = await Category.findOne({ slug: category, isActive: true }).select("_id name")
+            const categoryDoc = await Category.findOne({
+                slug: category,
+                isActive: true
+            }).select("_id")
 
             if (!categoryDoc) {
                 return res.status(200).json({
@@ -118,30 +121,33 @@ exports.see_products = async (req, res, next) => {
                     hasMore: false
                 })
             }
+
             filter.category = categoryDoc._id
         }
 
+        // ✅ Search filter (ONLY string fields)
         if (q) {
             filter.$or = [
                 { title: { $regex: q, $options: "i" } },
                 { shortDescription: { $regex: q, $options: "i" } },
                 { material: { $regex: q, $options: "i" } },
-                { category: { $regex: q, $options: "i" } },
                 { description: { $regex: q, $options: "i" } }
             ]
         }
 
-        const products = await Product.find(filter)
-            .select("title price shortDescription category isActive rating likes views images certified")
-            .populate("category", "name")
-            .sort({ createdAt: -1 })
-            .skip(skip)
-            .limit(limit)
-            .lean()
+        const [products, totalProduct] = await Promise.all([
+            Product.find(filter)
+                .select("title price shortDescription category rating likes views images certified")
+                .populate("category", "name slug")
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean(),
 
-        const totalProduct = await Product.countDocuments(filter)
+            Product.countDocuments(filter)
+        ])
+
         const hasMore = skip + products.length < totalProduct
-
 
         return res.status(200).json({
             msg: "fetched products",
@@ -150,12 +156,11 @@ exports.see_products = async (req, res, next) => {
             hasMore,
             products
         })
-
-
     } catch (error) {
         next(error)
     }
 }
+
 
 //productId
 exports.product_by_id = async (req, res, next) => {
@@ -345,7 +350,7 @@ exports.get_logged_artist_products = async (req, res, next) => {
 exports.get_all_category = async (req, res, next) => {
     try {
 
-        const allCategory = await Category.find({ isActive: true }).select("name")
+        const allCategory = await Category.find({ isActive: true }).select("slug name")
 
         res.status(200).json({ allCategory })
 

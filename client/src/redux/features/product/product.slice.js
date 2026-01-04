@@ -36,7 +36,7 @@ const productSlice = createSlice({
                 if (action.payload.page === 1) {
                     state.products = action.payload.products
                 } else {
-                    state.products.push(...action.payload.product)
+                    state.products.push(...action.payload.products)
                 }
                 state.page = action.payload.page
                 state.hasMore = action.payload.hasMore
@@ -66,7 +66,13 @@ const productSlice = createSlice({
 
             .addCase(get_all_category.fulfilled, (state, action) => {
                 state.loading = false
+                
                 state.categories = action.payload
+            })
+
+            .addCase(get_all_category.rejected , (state , action) => {
+                state.loading = false
+                state.error = action.payload
             })
 
             .addCase(create_product.pending, (state, action) => {

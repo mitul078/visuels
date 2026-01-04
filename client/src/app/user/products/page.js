@@ -1,31 +1,43 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "./product.scss"
 import { motion, AnimatePresence } from "framer-motion"
+import { useDispatch, useSelector } from 'react-redux'
+import { get_all_category, get_products } from '@/redux/features/product/product.thunk'
+import toast from 'react-hot-toast'
+import { clearState } from '@/redux/features/product/product.slice'
 
 const page = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [priceRange, setPriceRange] = useState([0, 10000]);
     const [sortBy, setSortBy] = useState('featured');
     const [showFilters, setShowFilters] = useState(false);
+    const { products, loading, error, success, categories, hasMore } = useSelector((state) => state.product)
 
-    // Sample product data - replace with actual data from API
-    const products = [
-        { id: 1, title: "Abstract Vision", artist: "Sarah Chen", price: 899, category: "Abstract", image: "" },
-        { id: 2, title: "Nature's Symphony", artist: "Michael Torres", price: 1249, category: "Nature", image: "" },
-        { id: 3, title: "Urban Dreams", artist: "Emma Wilson", price: 699, category: "Urban", image: "" },
-        { id: 4, title: "Ocean Depths", artist: "James Park", price: 1599, category: "Nature", image: "" },
-        { id: 5, title: "Digital Fusion", artist: "Alex Rivera", price: 1099, category: "Digital", image: "" },
-        { id: 6, title: "Minimalist Flow", artist: "Lisa Zhang", price: 549, category: "Abstract", image: "" },
-        { id: 7, title: "City Lights", artist: "David Kim", price: 1799, category: "Urban", image: "" },
-        { id: 8, title: "Serene Landscape", artist: "Maria Garcia", price: 999, category: "Nature", image: "" },
-        { id: 9, title: "Geometric Harmony", artist: "Chris Brown", price: 799, category: "Abstract", image: "" },
-        { id: 10, title: "Futuristic Vision", artist: "Taylor Swift", price: 1399, category: "Digital", image: "" },
-        { id: 11, title: "Mountain Peak", artist: "Robert Lee", price: 1199, category: "Nature", image: "" },
-        { id: 12, title: "Neon Nights", artist: "Jessica Martinez", price: 949, category: "Urban", image: "" },
-    ];
+    const dispatch = useDispatch()
 
-    const categories = ['All', 'Abstract', 'Nature', 'Urban', 'Digital'];
+    const [page, setPage] = useState(1)
+
+    useEffect(() => {
+        if (loading) return
+        dispatch(get_products({ page, category: selectedCategory === "All" ? undefined : selectedCategory }))
+        setPage(1)
+    }, [dispatch, selectedCategory, page])
+
+    useEffect(() => {
+        dispatch(get_all_category())
+    }, [dispatch])
+
+
+    useEffect(() => {
+
+        if (!error) return
+
+        toast(error)
+
+        dispatch(clearState())
+
+    }, [])
 
     return (
         <div className='Product'>
@@ -64,18 +76,24 @@ const page = () => {
             >
                 <div className="controls-wrapper">
                     <div className="category-filters">
+                        <motion.button
+                            className={`category-btn ${selectedCategory === "All" ? "active" : ""}`}
+                            onClick={() => setSelectedCategory("All")}
+                        >
+                            All
+                        </motion.button>
                         {categories.map((category, index) => (
                             <motion.button
-                                key={category}
-                                className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
-                                onClick={() => setSelectedCategory(category)}
+                                key={category._id}
+                                className={`category-btn ${selectedCategory === category.slug ? 'active' : ''}`}
+                                onClick={() => setSelectedCategory(category.slug)}
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 0.3 }}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                             >
-                                {category}
+                                {category.name}
                             </motion.button>
                         ))}
                     </div>
@@ -116,7 +134,6 @@ const page = () => {
                 )}
             </AnimatePresence>
 
-
             <motion.aside
                 className={`filter-sidebar ${showFilters ? 'open' : ''}`}
                 initial={false}
@@ -149,14 +166,14 @@ const page = () => {
                     <div className="filter-group">
                         <h3>Category</h3>
                         <div className="filter-options">
-                            {categories.slice(1).map(category => (
-                                <label key={category} className="filter-option">
+                            {categories.map(category => (
+                                <label key={category._id} className="filter-option">
                                     <input
                                         type="checkbox"
-                                        checked={selectedCategory === category}
-                                        onChange={() => setSelectedCategory(category)}
+                                        checked={selectedCategory === category.slug}
+                                        onChange={() => setSelectedCategory(category.slug)}
                                     />
-                                    <span>{category}</span>
+                                    <span>{category.name}</span>
                                 </label>
                             ))}
                         </div>
@@ -164,113 +181,90 @@ const page = () => {
                 </div>
             </motion.aside>
 
-            <section className="products-section">
+            {products.length === 0 && (
                 <motion.div
-                    className="products-grid"
-                    variants={{
-                        hidden: {},
-                        show: {
-                            transition: { staggerChildren: 0.1 }
-                        }
-                    }}
-                    initial="hidden"
-                    animate="show"
+                    initial={{opacity:0 , y:20}}
+                    animate={{opacity:1 , y:0}}
+                    transition={{duration: .4 , ease: "easeOut"}}
+                    className='fallback'
                 >
-                    {products.map((product, index) => (
-                        <motion.div
-                            key={product.id}
-                            className="product-card"
-                            variants={{
-                                hidden: { opacity: 0, y: 40, scale: 0.95 },
-                                show: {
-                                    opacity: 1,
-                                    y: 0,
-                                    scale: 1,
-                                    transition: {
-                                        type: "spring",
-                                        stiffness: 260,
-                                        damping: 22
-                                    }
-                                }
-                            }}
-                            whileHover={{
-                                y: -8,
-                                transition: { duration: 0.2 }
-                            }}
-                        >
-                            <div className="card-image-wrapper">
-                                <div className="product-image"></div>
-                                <div className="card-overlay">
-                                    <motion.button
-                                        className="quick-view-btn"
-                                        whileHover={{ scale: 1.1 }}
-                                        whileTap={{ scale: 0.9 }}
-                                    >
-                                        <i className="ri-eye-line"></i>
-                                        Quick View
-                                    </motion.button>
-                                    <motion.button
-                                        className="like-btn"
-                                        whileHover={{ scale: 1.1 }}
-                                        whileTap={{ scale: 0.9 }}
-                                    >
-                                        <i className="ri-heart-line"></i>
-                                    </motion.button>
-                                </div>
-                                {index < 3 && (
-                                    <div className="badge featured-badge">
-                                        <i className="ri-star-fill"></i>
-                                        Featured
-                                    </div>
-                                )}
-                            </div>
-                            <div className="card-content">
-                                <div className="product-info">
-                                    <h3 className="product-title">{product.title}</h3>
-                                    <div className="product-artist">
-                                        <div className="artist-avatar"></div>
-                                        <span className="artist-name">by {product.artist}</span>
-                                    </div>
-                                    <div className="product-category">
-                                        <span>{product.category}</span>
-                                    </div>
-                                </div>
-                                <div className="product-footer">
-                                    <div className="product-price">
-                                        <span className="price-amount">${product.price}</span>
-                                    </div>
-                                    <motion.button
-                                        className="add-to-cart-btn"
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        <i className="ri-shopping-cart-line"></i>
-                                        See detail
-                                    </motion.button>
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </motion.div>
-            </section>
 
-            {/* Load More Section */}
-            <motion.section
-                className="load-more-section"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-            >
-                <motion.button
-                    className="load-more-btn"
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                >
-                    Load More Artworks
-                    <i className="ri-arrow-down-line"></i>
-                </motion.button>
-            </motion.section>
+                    <h1>No Product Found</h1>
+                </motion.div>)}
+            <div className="products-grid">
+                {products.map((product, index) => (
+                    <motion.div
+                        key={product._id}
+                        className="product-card"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                        whileHover={{ y: -5 }}
+                    >
+                        <div className="card-image-wrapper">
+                            <div className="product-image-placeholder">
+                                <img src={product.images[0].url} alt="" />
+                            </div>
+                            <div className={`status-badge ${product?.status?.toLowerCase()}`}>
+                                {product.status}
+                            </div>
+                        </div>
+                        <div className="card-content">
+                            <h3 className="product-title">{product.title}</h3>
+                            <p className="product-description">{product.shortDescription}</p>
+                            <div className="product-meta">
+                                <span className="product-category">
+                                    <i className="ri-folder-line"></i>
+                                    {product.category.name}
+                                </span>
+                                <div className="product-stats">
+                                    <span className="stat">
+                                        <i className="ri-eye-line"></i>
+                                        {product.views || 0}
+                                    </span>
+                                    <span className="stat">
+                                        <i className="ri-heart-line"></i>
+                                        {product.likes || 0}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="product-footer">
+                                <div className="price">
+                                    <span className="currency">$</span>
+                                    <span className="amount">{product.price.toLocaleString()}</span>
+                                </div>
+                                <div className="product-btn">
+                                    <button>See Detail</button>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+
+            {
+                products.length !== 0 && (
+
+                    <motion.section
+                        className="load-more-section"
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <motion.button
+                            disabled={!hasMore || loading}
+                            onClick={() => setPage(prev => prev + 1)}
+                            className="load-more-btn"
+                            whileHover={{ scale: !hasMore ? 1 : 1.05 }}
+                            whileTap={{ scale: !hasMore ? 1 : 0.95 }}
+                        >
+                            {loading ? "Loading..." : hasMore ? "Load More Artworks" : "No More Artworks"}
+                            {hasMore && <i className="ri-arrow-down-line"></i>}
+                        </motion.button>
+                    </motion.section>
+                )
+            }
         </div>
     )
 }
