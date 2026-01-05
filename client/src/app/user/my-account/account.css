@@ -1,0 +1,392 @@
+.my-account {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--main-bg-color);
+  padding: var(--main-padding-y) var(--main-padding-x);
+}
+@media (max-width: 768px) {
+  .my-account {
+    padding: var(--mobile-padding-y) var(--mobile-padding-x);
+  }
+}
+.my-account .container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+.my-account .profile-header {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+}
+@media (max-width: 768px) {
+  .my-account .profile-header {
+    padding: 1.5rem;
+  }
+}
+.my-account .profile-header .avatar-section {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #E5E7EB;
+}
+@media (max-width: 768px) {
+  .my-account .profile-header .avatar-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+}
+.my-account .profile-header .avatar-section .avatar {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.my-account .profile-header .avatar-section .avatar img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.my-account .profile-header .avatar-section .avatar .edit-avatar {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--btn-bg);
+  color: #ffffff;
+  border: 3px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.my-account .profile-header .avatar-section .avatar .edit-avatar i {
+  font-size: 1.2rem;
+}
+.my-account .profile-header .avatar-section .avatar .edit-avatar:hover {
+  background: #1E40AF;
+  transform: scale(1.1);
+}
+.my-account .profile-header .avatar-section .user-info {
+  flex: 1;
+}
+.my-account .profile-header .avatar-section .user-info h1 {
+  font-size: 2.5rem;
+  font-weight: var(--font-high-bold);
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+@media (max-width: 768px) {
+  .my-account .profile-header .avatar-section .user-info h1 {
+    font-size: 2rem;
+  }
+}
+.my-account .profile-header .avatar-section .user-info .email {
+  font-size: 1.1rem;
+  color: #6B7280;
+  margin-bottom: 0.25rem;
+}
+.my-account .profile-header .avatar-section .user-info .username {
+  font-size: 1rem;
+  color: #9CA3AF;
+  margin-bottom: 0.5rem;
+}
+.my-account .profile-header .avatar-section .user-info .join-date {
+  font-size: 0.9rem;
+  color: #9CA3AF;
+}
+.my-account .profile-header .stats {
+  display: flex;
+  gap: 2rem;
+}
+@media (max-width: 768px) {
+  .my-account .profile-header .stats {
+    justify-content: space-around;
+    gap: 1rem;
+  }
+}
+.my-account .profile-header .stats .stat-item {
+  text-align: center;
+}
+.my-account .profile-header .stats .stat-item h3 {
+  font-size: 2rem;
+  font-weight: var(--font-high-bold);
+  color: var(--btn-bg);
+  margin-bottom: 0.25rem;
+}
+.my-account .profile-header .stats .stat-item p {
+  font-size: 0.9rem;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.my-account .content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+}
+@media (max-width: 768px) {
+  .my-account .content-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+.my-account .section-card {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.my-account .section-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+.my-account .section-card:first-child {
+  grid-column: 1/-1;
+}
+.my-account .section-card .section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #E5E7EB;
+  background: linear-gradient(135deg, #F9FAFB 0%, #FFFFFF 100%);
+}
+.my-account .section-card .section-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: var(--font-high-bold);
+  color: var(--text-color);
+}
+.my-account .section-card .section-header h2 i {
+  font-size: 1.5rem;
+  color: var(--btn-bg);
+}
+.my-account .section-card .section-header .edit-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid #CBD5E1;
+  border-radius: 0.5rem;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.my-account .section-card .section-header .edit-btn i {
+  font-size: 1rem;
+}
+.my-account .section-card .section-header .edit-btn:hover {
+  background: var(--btn-bg);
+  color: #ffffff;
+  border-color: var(--btn-bg);
+}
+.my-account .section-card .section-content {
+  padding: 2rem;
+}
+@media (max-width: 768px) {
+  .my-account .section-card .section-content {
+    padding: 1.5rem;
+  }
+}
+.my-account .form-group {
+  margin-bottom: 1.5rem;
+}
+.my-account .form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: var(--font-medium-bold);
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+.my-account .form-group input,
+.my-account .form-group textarea,
+.my-account .form-group select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #CBD5E1;
+  border-radius: 0.5rem;
+  background: #F8FAFC;
+  color: var(--text-color);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+.my-account .form-group input:focus,
+.my-account .form-group textarea:focus,
+.my-account .form-group select:focus {
+  outline: none;
+  border-color: var(--btn-bg);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(25, 24, 59, 0.1);
+}
+.my-account .form-group input:disabled,
+.my-account .form-group textarea:disabled,
+.my-account .form-group select:disabled {
+  background: #F3F4F6;
+  color: #6B7280;
+  cursor: not-allowed;
+}
+.my-account .form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+.my-account .form-group select {
+  cursor: pointer;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231B3C53' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+.my-account .form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.my-account .setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem;
+  border: 1px solid #E5E7EB;
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+.my-account .setting-item:hover {
+  background: #F9FAFB;
+  border-color: #CBD5E1;
+}
+.my-account .setting-item .setting-info {
+  flex: 1;
+}
+.my-account .setting-item .setting-info h3 {
+  font-size: 1.1rem;
+  font-weight: var(--font-medium-bold);
+  color: var(--text-color);
+  margin-bottom: 0.25rem;
+}
+.my-account .setting-item .setting-info p {
+  font-size: 0.85rem;
+  color: #6B7280;
+}
+.my-account .setting-item .action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: var(--btn-bg);
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: var(--font-medium-bold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.my-account .setting-item .action-btn i {
+  font-size: 1rem;
+}
+.my-account .setting-item .action-btn:hover {
+  background: #1E40AF;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(25, 24, 59, 0.3);
+}
+.my-account .setting-item .action-btn:active {
+  transform: translateY(0);
+}
+.my-account .setting-item .action-btn.danger {
+  background: #EF4444;
+}
+.my-account .setting-item .action-btn.danger:hover {
+  background: #DC2626;
+}
+.my-account .preference-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem;
+  border: 1px solid #E5E7EB;
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+.my-account .preference-item:hover {
+  background: #F9FAFB;
+  border-color: #CBD5E1;
+}
+.my-account .preference-item .preference-info {
+  flex: 1;
+}
+.my-account .preference-item .preference-info h3 {
+  font-size: 1.1rem;
+  font-weight: var(--font-medium-bold);
+  color: var(--text-color);
+  margin-bottom: 0.25rem;
+}
+.my-account .preference-item .preference-info p {
+  font-size: 0.85rem;
+  color: #6B7280;
+}
+.my-account .preference-item .toggle {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+}
+.my-account .preference-item .toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.my-account .preference-item .toggle input:checked + .slider {
+  background-color: var(--btn-bg);
+}
+.my-account .preference-item .toggle input:checked + .slider:before {
+  transform: translateX(24px);
+}
+.my-account .preference-item .toggle input:focus + .slider {
+  box-shadow: 0 0 1px var(--btn-bg);
+}
+.my-account .preference-item .toggle .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #CBD5E1;
+  transition: 0.3s;
+  border-radius: 28px;
+}
+.my-account .preference-item .toggle .slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}/*# sourceMappingURL=account.css.map */

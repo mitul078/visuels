@@ -1,6 +1,7 @@
 import React from 'react'
 import "./menu.scss"
 import { motion, AnimatePresence } from "framer-motion";
+import Link from 'next/link';
 
 
 const Menu = ({ open, onClose }) => {
@@ -31,8 +32,8 @@ const Menu = ({ open, onClose }) => {
                             </div>
 
                             <div className="mini-container">
-                                <div className="box"><h1>Account</h1></div>
-                                <div className="box"><h1>Orders</h1></div>
+                                <Link onClick={onClose} className='box' href={"/user/my-account"}>Account</Link>
+                                <Link onClick={onClose} className='box' href={"/user/my-orders"}>Orders</Link>
                                 <div className="box"><h1>Setting</h1></div>
                                 <div className="box"><h1>Logout</h1></div>
                             </div>
