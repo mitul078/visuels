@@ -1,5 +1,5 @@
 const User = require("./user.model")
-
+const AppError = require("../../utils/AppError")
 
 exports.me = async (req, res, next) => {
     try {
@@ -44,7 +44,7 @@ exports.update_profile = async (req, res, next) => {
         if (dateOfBirth) updateData.dateOfBirth = dateOfBirth
         if (pinCode) updateData.pinCode = pinCode
 
-        if (firstName && lastName && phone && city && country && address) {
+        if (firstName && lastName && phone && city && country && address && isMobileVerified) {
             updateData.isProfileCompleted = true
         }
 
