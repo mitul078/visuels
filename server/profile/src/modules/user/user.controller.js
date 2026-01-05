@@ -44,26 +44,26 @@ exports.update_profile = async (req, res, next) => {
         if (dateOfBirth) updateData.dateOfBirth = dateOfBirth
         if (pinCode) updateData.pinCode = pinCode
 
-        if (firstName && lastName && phone && city && country && address && isMobileVerified) {
+        if (firstName && lastName && phone && city && country && address) {
             updateData.isProfileCompleted = true
         }
 
-        const user = await User.findOneAndUpdate(
+        const profile = await User.findOneAndUpdate(
             { userId },
             { $set: updateData },
             { new: true, runValidators: true }
         )
-        if (!user) {
+        if (!profile) {
             return res.status(404).json({
                 success: false,
-                message: "User not found"
+                message: "profile not found"
             })
         }
 
         res.status(200).json({
             success: true,
             message: "Profile updated successfully",
-            user
+            profile
         })
 
 
