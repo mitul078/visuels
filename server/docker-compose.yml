@@ -25,11 +25,19 @@ services:
     env_file: 
       - ./order/.env
 
+  profile:
+    build: ./profile
+    container_name: profile-service
+    ports:
+      - "4004:4004"
+    env_file:
+      - ./profile/.env
+
   message: 
     build: ./chat
     container_name: message-service
     ports: 
-      - "4004:4004"
+      - "4005:4005"
     env_file: 
       - ./chat/.env
 
@@ -37,7 +45,7 @@ services:
     build: ./jobs
     container_name: job-service
     ports: 
-      - "4005:4005"
+      - "4006:4006"
     env_file:
       - ./jobs/.env
 
@@ -52,6 +60,7 @@ services:
       - auth
       - product
       - order
+      - profile
       - message
       - jobs
 

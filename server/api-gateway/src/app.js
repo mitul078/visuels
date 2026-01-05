@@ -42,9 +42,13 @@ app.use("/products", createProxy("http://localhost:4002", "/api/v1/products"))
 
 app.use("/order", createProxy("http://order:4003", "/api/v1/order"))
 
-app.use("/message", createProxy("http://message:4004", "/api/v1/message"))
+app.use("/message", createProxy("http://message:4005", "/api/v1/message"))
 
-app.use("/job", createProxy("http://localhost:4005", "/api/v1/job"))
+app.use("/job", createProxy("http://localhost:4006", "/api/v1/job"))
+
+app.use("/user/profile" , createProxy("http://localhost:4004" , "/api/v1/user/profile"))
+
+app.use("/artist/profile" , createProxy("http://localhost:4004" , "/api/v1/artist/profile"))
 
 
 
