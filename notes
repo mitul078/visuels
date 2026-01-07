@@ -1,0 +1,16 @@
+/*
+    stop from the 7th jan 2026
+    last commit that profile completion of the artist
+    fix the bugs and redirect to the artist completion page but its not fully made it yet
+    what next:
+        -add the functionality of the artist at the product service where they also can add the artworks not only the products
+        -that artworks will shown on the profile page
+        -artist profile page updation functionlaity
+        -it contain the data like image , title , status[available or sold]
+        -also add one functionality that artist can see the top [selling or viewing ] products at the profile(later)
+        -add the [viewing , likes , followers ] functionality also
+        -user can place the order means send the order detail to the respected artist and
+        -artist can see the order at the /my-orders page where they connect with  user and contact with them
+        -user order-page and artist order-page
+        -logout functionality
+*/
