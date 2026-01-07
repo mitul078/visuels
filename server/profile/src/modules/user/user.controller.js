@@ -1,6 +1,24 @@
 const User = require("./user.model")
 const AppError = require("../../utils/AppError")
 
+
+//user
+// user fetch the artist profile
+// 1>half info and second full_detail
+// fetch own profile and update it
+// user follow the artist profile
+// total artworks from the product service
+
+
+//artist
+//fetch own profile and update it
+//joingdDate from the user service
+// total artworks from the product service
+// overall rating
+
+
+
+
 exports.me = async (req, res, next) => {
     try {
 
@@ -71,3 +89,5 @@ exports.update_profile = async (req, res, next) => {
         next(error)
     }
 }
+
+

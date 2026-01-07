@@ -12,6 +12,7 @@ import { Toaster } from "react-hot-toast";
 import UserNav from "@/components/Nav/UserNav/UserNav";
 import Nav from "@/components/Nav/Nav";
 import ArtistNav from "@/components/Nav/ArtistNav/ArtistNav";
+import { artist_profile, user_profile } from "@/redux/features/profile/profile.thunk";
 
 const josefin = Josefin_Sans({
   subsets: ["latin"],
@@ -22,12 +23,16 @@ const josefin = Josefin_Sans({
 const publicRoutes = ["/auth/signin", "/auth/signup"];
 const authRoutes = ["/auth/signin", "/auth/signup", "/auth/verify-otp"];
 const otpRoute = "/auth/verify-otp";
+const completeProfileRoute = "/artist/complete-profile";
+const hideNavRoutes = ["/auth/signin", "/auth/signup", "/auth/verify-otp", "/artist/complete-profile"];
+
 
 function InitAuth({ children }) {
   const path = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const { isProfileCompleted, loading: profileLoading, isCompleted } = useSelector((state) => state.profile)
   const {
     authChecked,
     otpPending,
@@ -37,22 +42,35 @@ function InitAuth({ children }) {
   } = useSelector((state) => state.auth);
 
 
+  useEffect(() => {
+    dispatch(get_me())
+  }, [dispatch])
 
   useEffect(() => {
-    dispatch(get_me());
-  }, [dispatch]);
+
+
+
+    if (isAuthenticated && user?.role === "ARTIST") {
+      dispatch(artist_profile())
+    }
+
+    if (isAuthenticated && user?.role === "USER") {
+      dispatch(user_profile())
+    }
+  }, [dispatch, isAuthenticated, user?.role])
+
 
   if (!authChecked || loading) {
     return <Spinner />;
   }
 
-  // Not logged in
+
   if (!isAuthenticated && !publicRoutes.includes(path) && !(path === otpRoute && otpPending)) {
     router.replace("/auth/signin");
     return <Spinner />;
   }
 
-  // Logged in but on auth pages
+
   if (isAuthenticated && authRoutes.includes(path)) {
     router.replace("/");
     return <Spinner />;
@@ -67,11 +85,20 @@ function InitAuth({ children }) {
     return <Spinner />;
   }
 
+  if (isAuthenticated && user?.role === "ARTIST" && !profileLoading  && isCompleted && !isProfileCompleted && path !== completeProfileRoute) {
+    router.replace(completeProfileRoute);
+    return <Spinner />;
+  }
+
+
+  if (isCompleted && path === completeProfileRoute) {
+    router.replace("/")
+  }
 
   return (
     <>
-      {!authRoutes.includes(path) && <Nav />}
-      {!authRoutes.includes(path) && (
+      {!hideNavRoutes.includes(path) && <Nav />}
+      {!hideNavRoutes.includes(path) && (
         user?.role === "ARTIST" ? <ArtistNav /> : <UserNav />
       )}
       {children}

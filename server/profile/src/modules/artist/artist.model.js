@@ -7,15 +7,23 @@ const artistSchema = new mongoose.Schema({
         unique: true,
         index: true
     },
+    artist: {
+        type: {
+            name: String,
+            username: String,
+            email: String
+        }
+    },
 
+    followers: { type: Number, min: 0, default: 0 },
+    totalArtworks: { type: String },
     bio: { type: String },
     city: { type: String },
     state: { type: String },
+    country: { type: String },
+    overallRating: { type: String },
 
-    joinDate: {
-        type: Date,
-        default: Date.now
-    },
+    joiningDate: { type: Date },
 
     about: { type: String },
 

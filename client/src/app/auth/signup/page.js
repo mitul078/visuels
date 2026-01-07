@@ -77,7 +77,6 @@ const page = () => {
     const handleRulesClose = () => {
         setShowRules(false)
         setRulesAccepted(false)
-        // Reset to USER role if they close without accepting
         setSelectedRole("USER")
         // Uncheck artist radio button
         const artistRadio = document.getElementById("role-artist")

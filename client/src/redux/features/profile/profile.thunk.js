@@ -23,3 +23,25 @@ export const update_user_profile = createAsyncThunk("profile/user/update", async
 
     }
 })
+
+export const artist_profile = createAsyncThunk("artist/profile/me", async (_, { rejectWithValue }) => {
+    try {
+
+        const res = await axios.get("/artist/profile/me", { withCredentials: true })
+        return res.data.profile
+
+    } catch (error) {
+        return rejectWithValue(error.response?.data?.message || "Artist profile page error")
+    }
+})
+
+export const complete_profile = createAsyncThunk("artist/complete" ,async(data , {rejectWithValue}) => {
+    try {
+
+        const res = await axios.post("/artist/profile/create" , data)
+        return res.data.profile
+    } catch (error) {
+        return rejectWithValue(error.response?.data?.message || "Complete profile error")
+        
+    }
+} )

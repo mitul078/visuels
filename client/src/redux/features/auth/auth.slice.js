@@ -96,7 +96,6 @@ const authSlice = createSlice({
                 state.isAuthenticated = true
                 state.authChecked = true
                 state.loading = false
-                state.authErrMessage = null
             })
 
             .addCase(get_me.rejected, (state, action) => {

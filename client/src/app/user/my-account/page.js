@@ -10,6 +10,24 @@ import AccountSkeleton from "@/components/Skeleton/AccountSkeleton"
 
 const page = () => {
     const dispatch = useDispatch()
+
+    const COUNTRY_OPTIONS = ["India", "United States", "United Kingdom"]
+    const STATE_OPTIONS = [
+        "Gujarat",
+        "Maharashtra",
+        "Rajasthan",
+        "Delhi",
+        "Karnataka"
+    ]
+    const CITY_OPTIONS = [
+        "Ahmedabad",
+        "Surat",
+        "Mumbai",
+        "Pune",
+        "Jaipur",
+        "Delhi",
+        "Bengaluru"
+    ]
     const { profile, error, success, loading } = useSelector(state => state.profile)
     const { user } = useSelector((state) => state.auth)
     const [isEdit, setIsEdit] = useState(false)
@@ -279,14 +297,22 @@ const page = () => {
                                                     City
                                                 </span>
                                                 {
-                                                    !isEdit ? (<span className="value">{profile.city}</span>) : (
-                                                        <input
+                                                    !isEdit ? (
+                                                        <span className="value">{profile.city}</span>
+                                                    ) : (
+                                                        <select
                                                             className="in"
-                                                            type="text"
                                                             name="city"
                                                             value={data.city || ""}
                                                             onChange={handleChange}
-                                                        />
+                                                        >
+                                                            <option value="">Select city</option>
+                                                            {CITY_OPTIONS.map(city => (
+                                                                <option key={city} value={city}>
+                                                                    {city}
+                                                                </option>
+                                                            ))}
+                                                        </select>
                                                     )
                                                 }
 
@@ -298,14 +324,22 @@ const page = () => {
                                                     State
                                                 </span>
                                                 {
-                                                    !isEdit ? (<span className="value">{profile.state}</span>) : (
-                                                        <input
+                                                    !isEdit ? (
+                                                        <span className="value">{profile.state}</span>
+                                                    ) : (
+                                                        <select
                                                             className="in"
-                                                            type="text"
                                                             name="state"
                                                             value={data.state || ""}
                                                             onChange={handleChange}
-                                                        />
+                                                        >
+                                                            <option value="">Select state</option>
+                                                            {STATE_OPTIONS.map(state => (
+                                                                <option key={state} value={state}>
+                                                                    {state}
+                                                                </option>
+                                                            ))}
+                                                        </select>
                                                     )
                                                 }
                                             </div>
@@ -334,14 +368,22 @@ const page = () => {
                                                     Country
                                                 </span>
                                                 {
-                                                    !isEdit ? (<span className="value">{profile.country}</span>) : (
-                                                        <input
+                                                    !isEdit ? (
+                                                        <span className="value">{profile.country}</span>
+                                                    ) : (
+                                                        <select
                                                             className="in"
-                                                            type="text"
                                                             name="country"
                                                             value={data.country || ""}
                                                             onChange={handleChange}
-                                                        />
+                                                        >
+                                                            <option value="">Select country</option>
+                                                            {COUNTRY_OPTIONS.map(country => (
+                                                                <option key={country} value={country}>
+                                                                    {country}
+                                                                </option>
+                                                            ))}
+                                                        </select>
                                                     )
                                                 }
                                             </div>
